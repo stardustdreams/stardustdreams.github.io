@@ -4,8 +4,6 @@
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>開発をサポート — NovelCraft</title>
   <link rel="stylesheet" href="css/style.css"/>
-  <!-- Stripe.js (テストモード・本番モード共通) -->
-  <script src="https://js.stripe.com/v3/"></script>
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
@@ -35,12 +33,6 @@
 .checkout-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.2rem;font-size:.84rem;color:var(--nc-tx2)}
 .checkout-total span:last-child{font-family:var(--nc-fd);font-size:1.6rem;color:var(--nc-gold2)}
 .stripe-note{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--nc-tx3);margin-top:1rem;justify-content:center}
-/* Stripe テスト用バナー */
-.test-banner{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.3);border-radius:var(--nc-r1);padding:.65rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;font-size:.76rem;color:rgba(250,204,21,.9)}
-/* Stripe card element */
-#stripe-card-element{background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r1);padding:.75rem .9rem;margin-bottom:.9rem;transition:border-color var(--nc-t)}
-#stripe-card-element.StripeElement--focus{border-color:var(--nc-bd2)}
-#stripe-errors{color:#e08080;font-size:.8rem;margin-bottom:.7rem;min-height:1.2rem}
 /* Contact form */
 .contact-form{background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);padding:1.75rem;margin-top:3rem}
 .contact-form h2{font-size:1.5rem;margin-bottom:.3rem}
@@ -227,11 +219,6 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
       <!-- RIGHT: checkout card -->
       <div>
         <div class="checkout-card nc-fu">
-          <!-- テストモードバナー（config.jsのmodeが'test'の間表示） -->
-          <div class="test-banner" id="stripe-test-banner">
-            🧪 テストモード — 実際の課金は発生しません
-          </div>
-
           <div class="checkout-title">サポート内容</div>
           <div class="checkout-total">
             <span id="freq-label">1回のみ</span>
@@ -240,27 +227,14 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
 
           <ul style="font-size:.8rem;color:var(--nc-tx2);display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.3rem;padding-left:1.1rem;list-style:disc">
             <li>NovelCraftの継続的な開発を支援</li>
-            <li>サポーター一覧にお名前を掲載</li>
-            <li>Discordのサポーターバッジ</li>
-            <li>新機能の優先アクセス（月額のみ）</li>
+            <li>サポーター一覧にお名前を掲載（希望者のみ・手動掲載）</li>
           </ul>
 
-          <!-- Stripe Card Element (テスト用カード: 4242 4242 4242 4242) -->
-          <div id="stripe-card-element"></div>
-          <div id="stripe-errors"></div>
-
-          <button class="nc-btn nc-btn-p" style="width:100%;justify-content:center;font-size:.88rem;padding:.82rem" id="donate-btn" onclick="submitDonation()">
+          <button class="nc-btn nc-btn-p" style="width:100%;justify-content:center;font-size:.88rem;padding:.82rem" id="donate-btn" onclick="startDonationCheckout()">
             ❤ 支援する
           </button>
-          <div class="stripe-note">🔒 Stripe で安全に決済されます</div>
-
-          <!-- テストカード案内 -->
-          <div id="test-card-hint" style="display:none;margin-top:1rem;padding:.75rem;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.2);border-radius:var(--nc-r1)">
-            <div style="font-size:.68rem;font-family:var(--nc-fm);color:rgba(250,204,21,.8);margin-bottom:.4rem">テストカード情報</div>
-            <div style="font-size:.75rem;color:var(--nc-tx2)">番号: <code>4242 4242 4242 4242</code></div>
-            <div style="font-size:.75rem;color:var(--nc-tx2)">有効期限: 任意の将来の日付</div>
-            <div style="font-size:.75rem;color:var(--nc-tx2)">CVC: 任意の3桁</div>
-          </div>
+          <div class="stripe-note">🔒 Stripe Checkout で安全に決済されます</div>
+          <div id="donate-error" style="display:none;color:#e08080;font-size:.78rem;margin-top:1rem;text-align:center"></div>
         </div>
       </div>
     </div>
@@ -300,9 +274,8 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
  *   そのため以下のポリシーを守ってください：
  *
  *   [Stripe]
- *    - pk_test_ / pk_live_ (公開鍵) のみ記入すること
- *    - 秘密鍵 sk_... は絶対に書かないこと
- *    - Stripeダッシュボードで許可ドメインを自サイトのみに制限すること
+ *    - 決済は全て Server/ の Checkout API 経由（サーバー側で秘密鍵を保持）
+ *    - このファイルに Stripe のキーを直接書かないこと
  *
  *   [EmailJS]
  *    - Public Key のみ記入すること（Private Key は書かない）
@@ -318,17 +291,6 @@ const NC_CONFIG = {
    * Fly.io等へデプロイしたら実際のURLに書き換えてください（末尾スラッシュなし）。
    */
   apiBase: 'https://server-graceful-dawn-28.fly.dev',
-
-  /* ── Stripe ──────────────────────────────────────────
-   * テストモード用公開鍵を設定してください
-   * Stripeダッシュボード → 開発者 → APIキー → 公開可能キー
-   * 本番移行時: pk_live_... に変更し mode を 'live' にする
-   */
-  stripe: {
-    publishable_key: 'pk_test_51T8zQzAIVZTkmFvIjVBG9SQDwQhQkaVEcbFgrqvlzOHFRxDmrIO3eNWQ2BxjNiIzILBwXJgoMIasvcKeDaNWYTgv00fmWwkKUc',
-    mode: 'test',   // 'test' | 'live'
-    currency: 'jpy',
-  },
 
   /* ── EmailJS ─────────────────────────────────────────
    * https://www.emailjs.com でアカウント作成 → 以下を設定
@@ -347,18 +309,14 @@ const NC_CONFIG = {
 
 // 未設定項目をコンソールに警告
 (function () {
-  const ph = ['YOUR_TEST_PUBLISHABLE_KEY_HERE','YOUR_EMAILJS_PUBLIC_KEY',
-              'YOUR_SERVICE_ID','YOUR_TEMPLATE_ID','your.gmail@gmail.com'];
+  const ph = ['YOUR_EMAILJS_PUBLIC_KEY','YOUR_SERVICE_ID','YOUR_TEMPLATE_ID','your.gmail@gmail.com'];
   const missing = [];
-  if (ph.some(p => NC_CONFIG.stripe.publishable_key.includes(p))) missing.push('stripe.publishable_key');
   if (ph.some(p => NC_CONFIG.emailjs.public_key.includes(p)))  missing.push('emailjs.public_key');
   if (ph.some(p => NC_CONFIG.emailjs.service_id.includes(p)))  missing.push('emailjs.service_id');
   if (ph.some(p => NC_CONFIG.emailjs.template_id.includes(p))) missing.push('emailjs.template_id');
   if (ph.some(p => NC_CONFIG.emailjs.to_email.includes(p)))    missing.push('emailjs.to_email');
   if (missing.length)
     console.warn('[NovelCraft] 未設定の項目:\n' + missing.map(k=>'  → '+k).join('\n'));
-  if (NC_CONFIG.stripe.mode === 'test')
-    console.info('[NovelCraft] Stripe はテストモードで動作しています。');
 })();
 </script>
 <script>
@@ -391,90 +349,48 @@ async function startProCheckout(plan, btn) {
 }
 
 /* ============================================================
-   Stripe テストモード実装（任意金額の寄付フォーム用）
+   任意金額の寄付（Stripe Checkout へリダイレクト）
    ============================================================ */
-let stripe = null;
-let cardElement = null;
+async function startDonationCheckout() {
+  const errEl = document.getElementById('donate-error');
+  errEl.style.display = 'none';
 
-function initStripe() {
-  if (!NC_CONFIG.stripe.publishable_key.includes('YOUR_')) {
-    stripe = Stripe(NC_CONFIG.stripe.publishable_key);
-    const elements = stripe.elements();
-    cardElement = elements.create('card', {
-      style: {
-        base: {
-          color: '#eae6d8',
-          fontFamily: '"DM Mono", "Courier New", monospace',
-          fontSize: '14px',
-          '::placeholder': { color: '#504d3b' },
-        },
-        invalid: { color: '#e08080' },
-      },
-    });
-    cardElement.mount('#stripe-card-element');
-    cardElement.on('change', e => {
-      document.getElementById('stripe-errors').textContent = e.error ? e.error.message : '';
-    });
-    // テストモード時はヒントを表示
-    if (NC_CONFIG.stripe.mode === 'test') {
-      document.getElementById('test-card-hint').style.display = 'block';
-    } else {
-      document.getElementById('stripe-test-banner').style.display = 'none';
-    }
-  } else {
-    // キー未設定: カードエレメントにプレースホルダーを表示
-    document.getElementById('stripe-card-element').innerHTML =
-      '<div style="font-size:.75rem;color:var(--nc-tx3);font-family:var(--nc-fm);padding:.5rem 0">' +
-      '⚠ donate.html 内の NC_CONFIG.stripe.publishable_key を設定してください</div>';
-    document.getElementById('stripe-test-banner').style.display = 'none';
-  }
-}
-initStripe();
-
-async function submitDonation() {
-  if (!stripe || !cardElement) {
-    alert('donate.html 内の NC_CONFIG.stripe.publishable_key を設定してください。');
+  const amount = selAmt || parseInt(document.getElementById('custom-amt').value) || 0;
+  if (!amount || amount < 100) {
+    errEl.textContent = '⚠ 金額は¥100以上で入力してください。';
+    errEl.style.display = 'block';
     return;
   }
+
   const btn = document.getElementById('donate-btn');
   btn.disabled = true;
+  const original = btn.textContent;
   btn.textContent = '処理中...';
 
   try {
-    /*
-     * ─────────────────────────────────────────────────
-     * テストモード: PaymentMethod の作成まで実行（確認用）
-     * 本番移行時:
-     *  1. サーバーサイドで PaymentIntent を作成
-     *     POST /api/create-payment-intent → { clientSecret }
-     *  2. stripe.confirmCardPayment(clientSecret, { payment_method: { card: cardElement } })
-     * ─────────────────────────────────────────────────
-     */
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
+    const res = await fetch(`${NC_CONFIG.apiBase}/api/checkout/donate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, frequency: selFreq }),
     });
-
-    if (error) {
-      document.getElementById('stripe-errors').textContent = error.message;
-    } else {
-      const amt = selAmt || parseInt(document.getElementById('custom-amt').value) || 1000;
-      console.info('[Stripe TEST] PaymentMethod 作成成功:', {
-        id:       paymentMethod.id,
-        amount:   amt,
-        currency: NC_CONFIG.stripe.currency,
-        freq:     selFreq,
-        brand:    paymentMethod.card.brand,
-        last4:    paymentMethod.card.last4,
-      });
-      document.getElementById('thanks-modal').classList.add('open');
-    }
+    if (!res.ok) throw new Error('checkout session creation failed: ' + res.status);
+    const { url } = await res.json();
+    location.href = url;
   } catch (err) {
-    document.getElementById('stripe-errors').textContent = 'エラーが発生しました: ' + err.message;
-  } finally {
+    console.error('[Donate Checkout] failed:', err);
+    errEl.textContent = '⚠ 決済ページの起動に失敗しました。しばらくしてから再度お試しください。';
+    errEl.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = '❤ 支援する';
+    btn.textContent = original;
   }
+}
+
+// 寄付完了後にリダイレクトされてきた場合、お礼モーダルを表示
+if (new URLSearchParams(location.search).get('donated') === '1') {
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('thanks-modal').classList.add('open');
+    history.replaceState(null, '', location.pathname);
+  });
 }
 
 /* ============================================================
