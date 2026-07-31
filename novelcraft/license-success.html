@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>購入ありがとうございます — NovelCraft</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+.ls-wrap{max-width:560px;margin:0 auto;padding:6rem 1.5rem;text-align:center}
+.ls-ico{font-size:3rem;margin-bottom:1rem}
+.ls-card{background:var(--nc-card);border:1px solid var(--nc-bd2);border-radius:var(--nc-r2);padding:2rem;margin:2rem 0}
+.ls-key{font-family:var(--nc-fm);font-size:1.3rem;letter-spacing:.06em;color:var(--nc-gold2);background:var(--nc-bg);border:1px solid var(--nc-bd);border-radius:var(--nc-r1);padding:1rem;word-break:break-all;margin-bottom:1rem}
+.ls-steps{text-align:left;font-size:.84rem;color:var(--nc-tx2);line-height:2;margin-top:1.5rem}
+.ls-err{color:#e08080;font-size:.86rem;margin-top:1.5rem}
+  </style>
+</head>
+<body>
+<div class="nc-noise"></div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">NovelCraft<span class="nav-ver">Beta</span></a>
+  <div class="nav-links">
+    <a href="index.html">ホーム</a>
+    <a href="download.html">ダウンロード</a>
+    <a href="docs.html">ドキュメント</a>
+    <a href="showcase.html">作品集</a>
+    <a href="donate.html">サポート</a>
+    <a href="download.html" class="nav-dl">無料で始める</a>
+  </div>
+  <button class="nav-burger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="ls-wrap">
+  <div id="ls-loading">
+    <div class="ls-ico">⏳</div>
+    <h1>ライセンスを確認しています…</h1>
+  </div>
+
+  <div id="ls-result" style="display:none">
+    <div class="ls-ico">🎉</div>
+    <h1>ご購入ありがとうございます！</h1>
+    <p style="color:var(--nc-tx2);font-size:.9rem;margin-top:.5rem">以下のライセンスキーをNovelCraftエディタに入力してPro機能を有効化してください。</p>
+    <div class="ls-card">
+      <div class="ls-key" id="ls-key-text">-</div>
+      <button class="nc-btn nc-btn-p" onclick="copyKey()" id="ls-copy-btn">📋 コピーする</button>
+    </div>
+    <div class="ls-steps">
+      1. NovelCraftエディタを起動<br>
+      2. メニュー → 設定 → ライセンス を開く<br>
+      3. 上記のキーを貼り付けて「認証」をクリック
+    </div>
+  </div>
+
+  <div id="ls-error" style="display:none">
+    <div class="ls-ico">⚠️</div>
+    <h1>ライセンスの取得に失敗しました</h1>
+    <p class="ls-err" id="ls-error-msg">決済情報の確認中にエラーが発生しました。時間をおいて再度アクセスするか、<a href="donate.html#contact">お問い合わせ</a>ください。</p>
+  </div>
+</div>
+
+<footer class="nc-footer">
+  <div class="nc-ft-in">
+    <div class="nc-ft-bot"><span>© 2026 NovelCraft. All rights reserved.</span><span>Made with ❤ by NOAH</span></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+const NC_API_BASE = 'https://server-graceful-dawn-28.fly.dev';
+
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get('session_id');
+  const loading = document.getElementById('ls-loading');
+  const result = document.getElementById('ls-result');
+  const errorBox = document.getElementById('ls-error');
+
+  if (!sessionId) {
+    loading.style.display = 'none';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${NC_API_BASE}/api/license/by-session?session_id=${encodeURIComponent(sessionId)}`);
+    if (!res.ok) throw new Error('status ' + res.status);
+    const data = await res.json();
+    document.getElementById('ls-key-text').textContent = data.license_key;
+    loading.style.display = 'none';
+    result.style.display = 'block';
+  } catch (err) {
+    console.error('[license-success] failed:', err);
+    loading.style.display = 'none';
+    errorBox.style.display = 'block';
+  }
+})();
+
+function copyKey() {
+  const text = document.getElementById('ls-key-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('ls-copy-btn');
+    btn.textContent = '✓ コピーしました';
+    setTimeout(() => btn.textContent = '📋 コピーする', 2000);
+  });
+}
+</script>
+</body>
+</html>

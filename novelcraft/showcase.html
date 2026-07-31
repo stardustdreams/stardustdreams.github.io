@@ -12,6 +12,10 @@
 .filter-btn{font-family:var(--nc-fb);font-size:.72rem;letter-spacing:.06em;padding:.38rem .9rem;border-radius:2rem;border:1px solid var(--nc-bd);background:transparent;color:var(--nc-tx2);cursor:pointer;transition:all var(--nc-t)}
 .filter-btn:hover,.filter-btn.on{background:var(--nc-gp2);border-color:var(--nc-bd2);color:var(--nc-gold2)}
 .sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.sc-empty{text-align:center;padding:5rem 2rem;background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);margin-bottom:2rem}
+.sc-empty-ico{font-size:3rem;margin-bottom:1rem;opacity:.7}
+.sc-empty h2{font-family:var(--nc-fd);font-size:1.6rem;font-weight:300;margin-bottom:.8rem}
+.sc-empty p{font-size:.86rem;color:var(--nc-tx2);line-height:1.85;margin-bottom:1.6rem;max-width:460px;margin-left:auto;margin-right:auto}
 .sc-card{background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);overflow:hidden;transition:all var(--nc-t)}
 .sc-card:hover{border-color:var(--nc-bd2);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.38)}
 .sc-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:pointer}
@@ -75,126 +79,22 @@
 
 <section class="nc-sec" style="padding-top:0">
   <div class="nc-wrap">
-    <!-- Filter -->
-    <div class="filter-bar nc-fu">
-      <input class="filter-search" id="sc-search" type="text" placeholder="🔍 タイトル・作者名で検索..."/>
-      <button class="filter-btn on" data-genre="all">すべて</button>
-      <button class="filter-btn" data-genre="romance">恋愛</button>
-      <button class="filter-btn" data-genre="mystery">ミステリー</button>
-      <button class="filter-btn" data-genre="fantasy">ファンタジー</button>
-      <button class="filter-btn" data-genre="horror">ホラー</button>
-      <button class="filter-btn" data-genre="sf">SF</button>
-    </div>
-
-    <!-- Game grid -->
-    <div class="sc-grid" id="sc-grid">
-
-      <div class="sc-card nc-fu nc-d1" data-genre="romance" data-title="星降る夜に、あなたへ" data-author="HOSHINO">
-        <div class="sc-thumb" onclick="openModal('星降る夜に、あなたへ','HOSHINO','🌙','恋愛','屋上で運命的な出会いを果たした二人。選択が変える、五つの結末。','romance')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#1a1a35,#2a1535)">🌙</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">星降る夜に、あなたへ</div>
-          <div class="sc-author">by HOSHINO</div>
-          <div class="sc-desc">屋上で運命的な出会いを果たした二人の物語。選択が変える、五つの結末。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-teal">恋愛</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約90分</span></div>
-        </div>
-      </div>
-
-      <div class="sc-card nc-fu nc-d2" data-genre="mystery" data-title="消えた記憶と白い部屋" data-author="KUROSAWA">
-        <div class="sc-thumb" onclick="openModal('消えた記憶と白い部屋','KUROSAWA','🕵️','ミステリー','目覚めたら記憶がない。唯一の手がかりは、鍵のかかった白い部屋。','mystery')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#1a2030,#0a1525)">🕵️</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">消えた記憶と白い部屋</div>
-          <div class="sc-author">by KUROSAWA</div>
-          <div class="sc-desc">目覚めたら記憶がない。唯一の手がかりは、鍵のかかった白い部屋。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-blue">ミステリー</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約120分</span></div>
-        </div>
-      </div>
-
-      <div class="sc-card nc-fu nc-d3" data-genre="fantasy" data-title="銀の竜と夢見る少女" data-author="FUJIMOTO">
-        <div class="sc-thumb" onclick="openModal('銀の竜と夢見る少女','FUJIMOTO','🐉','ファンタジー','竜使いの末裔である少女が、封印された古竜と出会う壮大な冒険譚。','fantasy')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#152030,#102040)">🐉</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">銀の竜と夢見る少女</div>
-          <div class="sc-author">by FUJIMOTO</div>
-          <div class="sc-desc">竜使いの末裔である少女が、封印された古竜と出会う壮大な冒険譚。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-gold">ファンタジー</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約180分</span></div>
-        </div>
-      </div>
-
-      <div class="sc-card nc-fu nc-d1" data-genre="horror" data-title="廃病院の3号室" data-author="KURIHARA">
-        <div class="sc-thumb" onclick="openModal('廃病院の3号室','KURIHARA','👻','ホラー','取材で訪れた廃病院。夜になると聞こえる、誰かの泣き声。','horror')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#1a1015,#100810)">👻</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">廃病院の3号室</div>
-          <div class="sc-author">by KURIHARA</div>
-          <div class="sc-desc">取材で訪れた廃病院。夜になると聞こえる、誰かの泣き声。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-red">ホラー</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約60分</span></div>
-        </div>
-      </div>
-
-      <div class="sc-card nc-fu nc-d2" data-genre="sf" data-title="2099年の手紙" data-author="TAKAHASHI">
-        <div class="sc-thumb" onclick="openModal('2099年の手紙','TAKAHASHI','🚀','SF','2099年、AIが支配する世界で一人の人間が受け取った、100年前からの手紙。','sf')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#101530,#051020)">🚀</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">2099年の手紙</div>
-          <div class="sc-author">by TAKAHASHI</div>
-          <div class="sc-desc">AIが支配する2099年。100年前から届いた謎の手紙を巡るSFサスペンス。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-blue">SF</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約150分</span></div>
-        </div>
-      </div>
-
-      <div class="sc-card nc-fu nc-d3" data-genre="romance" data-title="春色のメロディ" data-author="SHIBUYA">
-        <div class="sc-thumb" onclick="openModal('春色のメロディ','SHIBUYA','🌸','恋愛','音楽大学に通う二人の奏でる、甘くせつない青春の音楽物語。','romance')">
-          <div class="sc-thumb-ph" style="background:linear-gradient(135deg,#251528,#2a2015)">🌸</div>
-          <div class="sc-play"><div class="sc-play-ic">▶</div></div>
-        </div>
-        <div class="sc-info">
-          <div class="sc-title">春色のメロディ</div>
-          <div class="sc-author">by SHIBUYA</div>
-          <div class="sc-desc">音楽大学に通う二人が奏でる、甘くせつない青春の音楽物語。</div>
-          <div class="sc-foot"><span class="nc-badge nc-b-teal">恋愛</span><span style="font-size:.72rem;color:var(--nc-tx3)">⏱ 約80分</span></div>
-        </div>
-      </div>
-
+    <!-- Empty state -->
+    <div class="sc-empty nc-fu">
+      <div class="sc-empty-ico">📭</div>
+      <h2>まだ掲載作品がありません</h2>
+      <p>NovelCraftはまだ公開されたばかりです。ここにはユーザーの皆さんが作った作品が並ぶ予定です。<br>あなたの作品が、最初の掲載作品になりませんか？</p>
+      <a href="donate.html#contact" class="nc-btn nc-btn-p">作品を掲載申請する</a>
     </div>
 
     <!-- Submit Banner -->
     <div class="submit-banner nc-fu">
       <h3>あなたの作品も掲載しませんか？</h3>
-      <p>NovelCraftで作ったゲームをDiscordで共有して、作品集への掲載を申請できます。</p>
-      <a href="#" class="nc-btn nc-btn-p">Discord で投稿する</a>
+      <p>NovelCraftで作ったゲームを、お問い合わせフォームから送っていただければ作品集への掲載を検討します。</p>
+      <a href="donate.html#contact" class="nc-btn nc-btn-p">掲載を申請する</a>
     </div>
   </div>
 </section>
-
-<!-- Modal -->
-<div class="nc-modal" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-thumb" id="modal-thumb">🎮</div>
-    <div class="modal-body">
-      <div class="modal-title" id="modal-title">タイトル</div>
-      <div class="modal-author" id="modal-author">by 作者</div>
-      <div class="modal-tags" id="modal-tags"></div>
-      <div class="modal-desc" id="modal-desc">説明</div>
-      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-        <a href="#" class="nc-btn nc-btn-p">▶ プレイする</a>
-        <a href="#" class="nc-btn nc-btn-o">🔗 詳細ページ</a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <footer class="nc-footer">
   <div class="nc-ft-in">
@@ -208,38 +108,5 @@
   </div>
 </footer>
 <script src="js/main.js"></script>
-<script>
-const genreMap={'romance':'恋愛','mystery':'ミステリー','fantasy':'ファンタジー','horror':'ホラー','sf':'SF'};
-const badgeClass={'romance':'nc-b-teal','mystery':'nc-b-blue','fantasy':'nc-b-gold','horror':'nc-b-red','sf':'nc-b-blue'};
-
-function openModal(title,author,ico,genre,desc,key){
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-author').textContent='by '+author;
-  document.getElementById('modal-desc').textContent=desc;
-  document.getElementById('modal-thumb').textContent=ico;
-  const g=document.getElementById('modal-tags');
-  g.innerHTML=`<span class="nc-badge ${badgeClass[key]||'nc-b-gold'}">${genre}</span>`;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-
-// Filter
-const btns=document.querySelectorAll('.filter-btn');
-const cards=document.querySelectorAll('.sc-card');
-btns.forEach(btn=>btn.addEventListener('click',()=>{
-  btns.forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  const g=btn.dataset.genre;
-  cards.forEach(c=>{c.style.display=(g==='all'||c.dataset.genre===g)?'':'none'});
-}));
-document.getElementById('sc-search').addEventListener('input',function(){
-  const q=this.value.toLowerCase();
-  cards.forEach(c=>{
-    const match=c.dataset.title.toLowerCase().includes(q)||c.dataset.author.toLowerCase().includes(q);
-    c.style.display=match?'':'none';
-  });
-});
-</script>
 </body>
 </html>

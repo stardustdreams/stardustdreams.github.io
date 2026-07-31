@@ -90,9 +90,9 @@
       <a href="showcase.html" class="nc-btn nc-btn-g">🎮 作品を遊ぶ</a>
     </div>
     <div class="hero-stats">
-      <div><div class="hs-n"><span data-n="1200">0</span>+</div><div class="hs-l">ダウンロード</div></div>
-      <div><div class="hs-n"><span data-n="87">0</span></div><div class="hs-l">公開作品</div></div>
-      <div><div class="hs-n"><span data-n="3">0</span></div><div class="hs-l">対応 OS</div></div>
+      <div><div class="hs-n"><span id="stat-downloads">…</span></div><div class="hs-l">ダウンロード</div></div>
+      <div><div class="hs-n"><span id="stat-works">…</span></div><div class="hs-l">公開作品</div></div>
+      <div><div class="hs-n"><span data-n="1">0</span></div><div class="hs-l">対応 OS</div></div>
       <div><div class="hs-n">無料</div><div class="hs-l">永続的に</div></div>
     </div>
   </div>
@@ -233,5 +233,47 @@
 </footer>
 <script src="js/main.js"></script>
 <script>initParticles('nc-cv');</script>
+<script>
+(async function () {
+  const NC_SHOWCASE_COUNT = 0; // showcase.html の掲載作品数と手動で同期
+
+  function count(el, target, dur) {
+    let v = 0;
+    const step = target / (dur / 16) || target;
+    const t = setInterval(() => {
+      v += step;
+      if (v >= target) { el.textContent = target.toLocaleString(); clearInterval(t); }
+      else el.textContent = Math.floor(v).toLocaleString();
+    }, 16);
+  }
+
+  const dlEl = document.getElementById('stat-downloads');
+  const wkEl = document.getElementById('stat-works');
+  count(wkEl, NC_SHOWCASE_COUNT, 1400);
+
+  const CACHE_KEY = 'nc_dl_stat_cache_v1';
+  const CACHE_TTL = 15 * 60 * 1000;
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && Date.now() - cached.t < CACHE_TTL) {
+      count(dlEl, cached.n, 1400);
+      return;
+    }
+  } catch (e) {}
+
+  try {
+    const res = await fetch('https://api.github.com/repos/stardustdreams/stardustdreams.github.io/releases');
+    if (!res.ok) throw new Error('GitHub API error ' + res.status);
+    const releases = await res.json();
+    const total = releases.reduce((sum, rel) =>
+      sum + (rel.assets || []).reduce((s, a) => s + (a.download_count || 0), 0), 0);
+    count(dlEl, total, 1400);
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ n: total, t: Date.now() }));
+  } catch (e) {
+    console.warn('[NovelCraft] ダウンロード数の取得に失敗:', e);
+    dlEl.textContent = '—';
+  }
+})();
+</script>
 </body>
 </html>

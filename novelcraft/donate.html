@@ -64,6 +64,19 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
 .use-bar-fill{height:100%;border-radius:2px}
 .supporter-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem}
 .supporter-chip{background:var(--nc-gp);border:1px solid var(--nc-bd2);border-radius:2rem;padding:.22rem .7rem;font-size:.74rem;color:var(--nc-gold2)}
+/* Pro purchase */
+.pro-card{background:linear-gradient(160deg,var(--nc-card),rgba(200,171,92,.05));border:1px solid var(--nc-bd2);border-radius:var(--nc-r2);padding:1.75rem;margin-bottom:2.5rem}
+.pro-card h2{font-size:1.5rem;margin-bottom:.3rem}
+.pro-card>p{font-size:.84rem;color:var(--nc-tx2);margin-bottom:1.4rem;line-height:1.8}
+.pro-plans{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.pro-plan{background:var(--nc-bg);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);padding:1.3rem;text-align:center}
+.pro-plan-price{font-family:var(--nc-fd);font-size:1.9rem;color:var(--nc-gold2)}
+.pro-plan-price span{font-size:.8rem;color:var(--nc-tx3)}
+.pro-plan-label{font-size:.76rem;color:var(--nc-tx2);margin-bottom:1rem}
+.pro-plan-feat{list-style:none;text-align:left;font-size:.76rem;color:var(--nc-tx2);margin-bottom:1.2rem;display:flex;flex-direction:column;gap:.4rem}
+.pro-plan-feat li::before{content:'✓ ';color:#7ecb8e}
+.pro-buy-btn{width:100%;justify-content:center;font-size:.85rem;padding:.7rem}
+.pro-buy-btn:disabled{opacity:.55;cursor:not-allowed}
 /* modal */
 .nc-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;align-items:center;justify-content:center;padding:1.5rem}
 .nc-modal.open{display:flex}
@@ -104,13 +117,40 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
     <div class="donate-wrap">
       <!-- LEFT -->
       <div>
+        <!-- Pro purchase -->
+        <div class="pro-card nc-fu" id="pro">
+          <h2>NovelCraft Pro を購入</h2>
+          <p>Pro版はブランディング表示の削除など追加機能が使えます。購入後に発行されるライセンスキーをエディタに入力して有効化してください。<br>寄付ではなく製品購入なので、金額は固定です。</p>
+          <div class="pro-plans">
+            <div class="pro-plan">
+              <div class="pro-plan-price">¥2,980</div>
+              <div class="pro-plan-label">買い切り・永続ライセンス</div>
+              <ul class="pro-plan-feat">
+                <li>書き出したゲームのブランディング表示を削除</li>
+                <li>今後追加されるPro機能も利用可能</li>
+              </ul>
+              <button class="nc-btn nc-btn-p pro-buy-btn" onclick="startProCheckout('one_time', this)">購入する</button>
+            </div>
+            <div class="pro-plan">
+              <div class="pro-plan-price">¥500<span>/月</span></div>
+              <div class="pro-plan-label">月額プラン</div>
+              <ul class="pro-plan-feat">
+                <li>買い切りと同じ機能を月額で</li>
+                <li>いつでも解約可能</li>
+              </ul>
+              <button class="nc-btn nc-btn-o pro-buy-btn" onclick="startProCheckout('monthly', this)">購入する</button>
+            </div>
+          </div>
+          <div id="pro-error" style="display:none;color:#e08080;font-size:.78rem;margin-top:1rem;text-align:center"></div>
+        </div>
+
         <!-- Progress -->
         <div class="prog-wrap nc-fu">
-          <div class="prog-row"><span class="prog-label">今月の目標</span><span class="prog-val">64.8%</span></div>
-          <div class="prog-bar"><div class="prog-fill" style="width:64.8%"></div></div>
+          <div class="prog-row"><span class="prog-label">サポーター募集中</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
           <div class="prog-row" style="margin-top:.5rem;margin-bottom:0">
-            <span class="prog-label">¥32,400 / ¥50,000</span>
-            <span class="prog-val">22名のサポーター</span>
+            <span class="prog-label">まだサポーターはいません</span>
+            <span class="prog-val">あなたが最初の一人に</span>
           </div>
         </div>
 
@@ -149,17 +189,7 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
         <!-- Supporters -->
         <div class="nc-fu" style="margin-top:2.5rem">
           <h2 style="font-size:1.4rem;margin-bottom:.4rem">サポーターの皆さん</h2>
-          <p style="font-size:.84rem;color:var(--nc-tx2);margin-bottom:0">ありがとうございます！</p>
-          <div class="supporter-list">
-            <span class="supporter-chip">⭐ HOSHINO</span>
-            <span class="supporter-chip">⭐ KUROSAWA</span>
-            <span class="supporter-chip">⭐ FUJIMOTO</span>
-            <span class="supporter-chip">TANAKA</span>
-            <span class="supporter-chip">YAMAMOTO</span>
-            <span class="supporter-chip">SATO</span>
-            <span class="supporter-chip">NAKAMURA</span>
-            <span class="supporter-chip">その他15名</span>
-          </div>
+          <p style="font-size:.84rem;color:var(--nc-tx2);margin-bottom:0">まだサポーターはいません。最初のサポーターになっていただいた方は、ここにお名前を掲載します。</p>
         </div>
 
         <!-- ──────────────────────────────────────── -->
@@ -283,6 +313,12 @@ textarea.form-input{resize:vertical;min-height:110px;line-height:1.7}
  */
 const NC_CONFIG = {
 
+  /* ── ライセンスサーバー(Server/)のデプロイ先URL ──────────
+   * ローカル動作確認中は http://localhost:3000 のままでOK。
+   * Fly.io等へデプロイしたら実際のURLに書き換えてください（末尾スラッシュなし）。
+   */
+  apiBase: 'https://server-graceful-dawn-28.fly.dev',
+
   /* ── Stripe ──────────────────────────────────────────
    * テストモード用公開鍵を設定してください
    * Stripeダッシュボード → 開発者 → APIキー → 公開可能キー
@@ -327,7 +363,35 @@ const NC_CONFIG = {
 </script>
 <script>
 /* ============================================================
-   Stripe テストモード実装
+   NovelCraft Pro 購入（実際に課金される Stripe Checkout へリダイレクト）
+   ============================================================ */
+async function startProCheckout(plan, btn) {
+  const errEl = document.getElementById('pro-error');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = '処理中...';
+
+  try {
+    const res = await fetch(`${NC_CONFIG.apiBase}/api/checkout/${plan}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    if (!res.ok) throw new Error('checkout session creation failed: ' + res.status);
+    const { url } = await res.json();
+    location.href = url;
+  } catch (err) {
+    console.error('[Pro Checkout] failed:', err);
+    errEl.textContent = '⚠ 決済ページの起動に失敗しました。しばらくしてから再度お試しください。';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+/* ============================================================
+   Stripe テストモード実装（任意金額の寄付フォーム用）
    ============================================================ */
 let stripe = null;
 let cardElement = null;
