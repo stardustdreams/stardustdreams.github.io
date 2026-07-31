@@ -1,0 +1,10 @@
+# APIキー設定ファイル（絶対にコミットしないこと）
+novelcraft/config.js
+config.js
+
+# macOS
+.DS_Store
+
+# エディタ設定
+.vscode/
+*.swp

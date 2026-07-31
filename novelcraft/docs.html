@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ドキュメント — NovelCraft</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+.docs-layout{display:grid;grid-template-columns:240px 1fr;gap:3rem;max-width:var(--nc-max);margin:0 auto;padding:calc(var(--nc-nav)+1.5rem) var(--nc-px) var(--nc-py);align-items:start}
+.nc-sb{position:sticky;top:calc(var(--nc-nav)+1rem);background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);padding:1.3rem}
+.sb-title{font-family:var(--nc-fm);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--nc-gold);border-bottom:1px solid var(--nc-bd);padding-bottom:.7rem;margin-bottom:.9rem}
+.sb-search{width:100%;background:var(--nc-bg);border:1px solid var(--nc-bd);border-radius:var(--nc-r1);padding:.48rem .75rem;font-size:.78rem;color:var(--nc-tx);outline:none;margin-bottom:1.1rem;transition:border-color var(--nc-t)}
+.sb-search:focus{border-color:var(--nc-bd2)}
+.sb-search::placeholder{color:var(--nc-tx3)}
+.sb-grp{margin-bottom:1rem}
+.sb-gl{font-family:var(--nc-fm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--nc-tx3);margin-bottom:.32rem}
+.sb-a{display:block;font-size:.78rem;color:var(--nc-tx2);padding:.3rem .45rem;border-radius:3px;transition:all var(--nc-t);margin-bottom:1px}
+.sb-a:hover{color:var(--nc-tx);background:var(--nc-gp)}
+.sb-a.on{color:var(--nc-gold2);background:var(--nc-gp)}
+/* docs main */
+.doc-main h2{font-size:1.8rem;border-bottom:1px solid var(--nc-bd);padding-bottom:.6rem;margin-bottom:1.2rem}
+.doc-main h3{font-size:1.15rem;margin:1.85rem 0 .6rem;color:var(--nc-gold2)}
+.doc-main p{color:var(--nc-tx2);margin-bottom:.85rem}
+.doc-main ul,.doc-main ol{color:var(--nc-tx2);padding-left:1.35rem;margin-bottom:.85rem}
+.doc-main li{font-size:.9rem;margin-bottom:.28rem;line-height:1.8}
+.doc-sec{margin-bottom:3.5rem;padding-bottom:3.5rem;border-bottom:1px solid var(--nc-bd);scroll-margin-top:calc(var(--nc-nav)+1rem)}
+.doc-sec:last-child{border-bottom:none}
+/* tables */
+.cmd-t{width:100%;border-collapse:collapse;margin:.85rem 0 1.3rem;font-size:.83rem}
+.cmd-t th{text-align:left;padding:.62rem .85rem;font-family:var(--nc-fm);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--nc-gold);border-bottom:1px solid var(--nc-bd2);background:rgba(200,171,92,.05);font-weight:400}
+.cmd-t td{padding:.75rem .85rem;border-bottom:1px solid var(--nc-bd);vertical-align:top;color:var(--nc-tx2)}
+.cmd-t tr:last-child td{border-bottom:none}
+.cmd-t tr:hover td{background:rgba(255,255,255,.02)}
+.tn{font-family:var(--nc-fm);color:var(--nc-gold2);white-space:nowrap}
+.tp{font-family:var(--nc-fm);font-size:.77rem;color:#6ec9c5}
+.req{font-family:var(--nc-fm);font-size:.63rem;color:#e08080}
+.opt{font-family:var(--nc-fm);font-size:.63rem;color:var(--nc-tx3)}
+/* code */
+.nc-code-block{background:rgba(0,0,0,.5);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);overflow:hidden;margin:.85rem 0 1.3rem}
+.nc-code-bar{display:flex;justify-content:space-between;align-items:center;padding:.52rem .85rem;background:rgba(0,0,0,.3);border-bottom:1px solid var(--nc-bd)}
+.nc-code-lang{font-family:var(--nc-fm);font-size:.63rem;color:var(--nc-gold);letter-spacing:.1em}
+.nc-code-cp{font-family:var(--nc-fm);font-size:.6rem;color:var(--nc-tx3);background:none;border:1px solid var(--nc-bd);padding:.16rem .52rem;border-radius:3px;cursor:pointer;transition:all var(--nc-t)}
+.nc-code-cp:hover{color:var(--nc-tx);border-color:var(--nc-bd2)}
+pre{padding:1.05rem;overflow-x:auto;font-family:var(--nc-fm);font-size:.79rem;line-height:1.72;color:var(--nc-tx);margin:0}
+.kw{color:#c792ea}.str{color:#c3e88d}.cm{color:var(--nc-tx3);font-style:italic}.fn{color:#82aaff}.nm{color:var(--nc-gold2)}.nu{color:#f78c6c}
+/* tip */
+.tip{display:flex;gap:.85rem;border-radius:var(--nc-r2);padding:1.05rem 1.35rem;margin:1.2rem 0}
+.t-tip{background:rgba(58,140,136,.07);border:1px solid rgba(58,140,136,.22)}
+.t-note{background:rgba(200,171,92,.07);border:1px solid rgba(200,171,92,.22)}
+.t-warn{background:rgba(180,70,70,.07);border:1px solid rgba(180,70,70,.22)}
+.tip-ico{font-size:.95rem;flex-shrink:0;margin-top:.14rem}
+.tip p{color:var(--nc-tx2);font-size:.83rem;margin:0}
+/* doc image placeholder */
+.doc-img{margin:1.2rem 0}
+@media(max-width:860px){.docs-layout{grid-template-columns:1fr;padding-top:calc(var(--nc-nav)+1rem)}.nc-sb{position:static}}
+  </style>
+</head>
+<body>
+<div class="nc-noise"></div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">NovelCraft<span class="nav-ver">Beta</span></a>
+  <div class="nav-links">
+    <a href="index.html">ホーム</a>
+    <a href="download.html">ダウンロード</a>
+    <a href="docs.html" class="active">ドキュメント</a>
+    <a href="showcase.html">作品集</a>
+    <a href="donate.html">サポート</a>
+    <a href="download.html" class="nav-dl">無料で始める</a>
+  </div>
+  <button class="nav-burger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="docs-layout">
+  <!-- Sidebar -->
+  <aside class="nc-sb">
+    <div class="sb-title">Documentation</div>
+    <input class="sb-search" id="docsQ" type="text" placeholder="🔍 検索..."/>
+    <div class="sb-grp"><div class="sb-gl">はじめに</div>
+      <a class="sb-a on" href="#start">クイックスタート</a>
+      <a class="sb-a" href="#install">インストール</a>
+      <a class="sb-a" href="#first">最初のプロジェクト</a>
+    </div>
+    <div class="sb-grp"><div class="sb-gl">エディタ</div>
+      <a class="sb-a" href="#editor">エディタ概要</a>
+      <a class="sb-a" href="#scenario">シナリオエディタ</a>
+      <a class="sb-a" href="#flowchart">フローチャート</a>
+      <a class="sb-a" href="#resources">リソース管理</a>
+    </div>
+    <div class="sb-grp"><div class="sb-gl">コマンドリファレンス</div>
+      <a class="sb-a" href="#cmd-text">テキスト・台詞</a>
+      <a class="sb-a" href="#cmd-bg">背景・演出</a>
+      <a class="sb-a" href="#cmd-chara">キャラクター</a>
+      <a class="sb-a" href="#cmd-audio">BGM・SE</a>
+      <a class="sb-a" href="#cmd-choice">選択肢・分岐</a>
+      <a class="sb-a" href="#cmd-var">変数・フラグ</a>
+      <a class="sb-a" href="#cmd-sys">システム</a>
+    </div>
+    <div class="sb-grp"><div class="sb-gl">その他</div>
+      <a class="sb-a" href="#export">エクスポート</a>
+      <a class="sb-a" href="#roadmap">ロードマップ</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="doc-main">
+
+    <div class="doc-sec" id="start">
+      <h2>🚀 クイックスタート</h2>
+      <p>NovelCraftを使って最初のノベルゲームを作るまでの流れを説明します。5分もかかりません。</p>
+      <div class="tip t-note"><span class="tip-ico">💡</span><p><strong>プログラミング知識は不要です。</strong>すべての操作はGUIで行えます。</p></div>
+
+      <h3 id="install">インストール</h3>
+      <ol>
+        <li><a href="download.html">ダウンロードページ</a>から使用OSのファイルをダウンロード</li>
+        <li><strong>Windows:</strong> <code>NovelCraft-Setup-0.9.2.exe</code> を実行してインストーラーの指示に従う</li>
+        <li><strong>macOS:</strong> <code>NovelCraft-0.9.2.dmg</code> を開き、アプリケーションフォルダにドラッグ</li>
+        <li>NovelCraftを起動するとホーム画面が表示されます</li>
+      </ol>
+      <!-- ▼ スクショ：ホーム画面 -->
+      <div class="doc-img">
+        <div class="nc-ph" style="min-height:200px">
+          <div class="nc-ph-ico">🏠</div>
+          <div class="nc-ph-title">スクリーンショット：ホーム画面</div>
+          <div class="nc-ph-sub">起動直後のホーム画面 → assets/screenshots/home-screen.png に保存</div>
+        </div>
+      </div>
+
+      <h3 id="first">最初のプロジェクト</h3>
+      <ol>
+        <li>ホーム画面の「新規プロジェクト」をクリック</li>
+        <li>プロジェクト名とゲームタイプを選択</li>
+        <li>保存先フォルダを選んで「作成」をクリック</li>
+        <li>メインエディタが開くので「シーン1」をダブルクリックして編集開始</li>
+      </ol>
+    </div>
+
+    <div class="doc-sec" id="editor">
+      <h2>🖥️ エディタ概要</h2>
+      <p>NovelCraftのエディタは5つのパネルで構成されています。</p>
+      <!-- ▼ スクショ：エディタ全体（パネル解説付き） -->
+      <div class="doc-img">
+        <div class="nc-ph" style="min-height:280px">
+          <div class="nc-ph-ico">🖥️</div>
+          <div class="nc-ph-title">スクリーンショット：エディタ全体（5パネル）</div>
+          <div class="nc-ph-sub">assets/screenshots/editor-full.png に保存<br>できれば各パネルが見えるように広げた状態で撮影してください</div>
+        </div>
+      </div>
+      <table class="cmd-t">
+        <tr><th>パネル名</th><th>場所</th><th>役割</th></tr>
+        <tr><td class="tn">シナリオツリー</td><td>左側</td><td>チャプター・シーンの階層管理</td></tr>
+        <tr><td class="tn">シナリオエディタ</td><td>中央上</td><td>テキスト・コマンドの入力・編集</td></tr>
+        <tr><td class="tn">プレビュー</td><td>右側</td><td>リアルタイムプレビュー表示</td></tr>
+        <tr><td class="tn">リソースマネージャ</td><td>左下</td><td>画像・音楽・動画の管理</td></tr>
+        <tr><td class="tn">プロパティパネル</td><td>右下</td><td>選択中コマンドの詳細設定</td></tr>
+      </table>
+
+      <h3 id="scenario">シナリオエディタ</h3>
+      <p>コマンドブロックをドラッグ＆ドロップで配置・並び替えできます。</p>
+      <!-- ▼ スクショ：シナリオエディタ -->
+      <div class="doc-img">
+        <div class="nc-ph" style="min-height:200px">
+          <div class="nc-ph-ico">📝</div>
+          <div class="nc-ph-title">スクリーンショット：シナリオエディタ</div>
+          <div class="nc-ph-sub">コマンドブロックが並んでいる状態 → assets/screenshots/scenario-editor.png</div>
+        </div>
+      </div>
+
+      <h3 id="flowchart">フローチャートビュー</h3>
+      <p>上部の「フローチャート」タブでシーンの分岐構造をノード形式で確認・編集できます。</p>
+      <!-- ▼ スクショ：フローチャート -->
+      <div class="doc-img">
+        <div class="nc-ph" style="min-height:200px">
+          <div class="nc-ph-ico">🌿</div>
+          <div class="nc-ph-title">スクリーンショット：フローチャートビュー</div>
+          <div class="nc-ph-sub">assets/screenshots/flowchart.png</div>
+        </div>
+      </div>
+
+      <h3 id="resources">リソース管理</h3>
+      <p>対応フォーマット:</p>
+      <ul>
+        <li><strong>画像:</strong> PNG, JPG（背景・立ち絵・スチル）</li>
+        <li><strong>音声:</strong> MP3, OGG（BGM・SE・ボイス）</li>
+        <li><strong>動画:</strong> MP4, WebM（OP/ED・ムービー）</li>
+      </ul>
+    </div>
+
+    <div class="doc-sec" id="cmd-text">
+      <h2>💬 テキスト・台詞</h2>
+      <h3>text — テキスト表示</h3>
+      <p>キャラクターの台詞やナレーションを表示します。最も基本的なコマンドです。</p>
+      <table class="cmd-t">
+        <tr><th>パラメータ</th><th>型</th><th>説明</th></tr>
+        <tr><td class="tn">name</td><td class="tp">string</td><td>キャラクター名（省略でナレーション）<span class="opt"> optional</span></td></tr>
+        <tr><td class="tn">text</td><td class="tp">string</td><td>表示するテキスト <span class="req">required</span></td></tr>
+        <tr><td class="tn">speed</td><td class="tp">number</td><td>文字表示速度 0〜100（デフォルト: 50）<span class="opt"> optional</span></td></tr>
+        <tr><td class="tn">voice</td><td class="tp">string</td><td>ボイスファイル名 <span class="opt">optional</span></td></tr>
+        <tr><td class="tn">window</td><td class="tp">string</td><td>normal / full / transparent <span class="opt">optional</span></td></tr>
+      </table>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="cm">// キャラクターの台詞</span>
+<span class="fn">text</span>(<span class="nm">name</span>: <span class="str">"明日葉"</span>, <span class="nm">text</span>: <span class="str">"あなたも…ここに来るんですね"</span>)
+
+<span class="cm">// ナレーション</span>
+<span class="fn">text</span>(<span class="nm">text</span>: <span class="str">"夕暮れに染まった屋上で、彼女は一人佇んでいた。"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="cmd-bg">
+      <h2>🖼️ 背景・演出</h2>
+      <h3>background — 背景変更</h3>
+      <table class="cmd-t">
+        <tr><th>パラメータ</th><th>型</th><th>説明</th></tr>
+        <tr><td class="tn">image</td><td class="tp">string</td><td>背景画像ファイル名 <span class="req">required</span></td></tr>
+        <tr><td class="tn">transition</td><td class="tp">string</td><td>fade / crossfade / wipe / instant <span class="opt">optional</span></td></tr>
+        <tr><td class="tn">duration</td><td class="tp">number</td><td>トランジション時間(ms) <span class="opt">optional</span></td></tr>
+      </table>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="fn">background</span>(<span class="nm">image</span>: <span class="str">"bg_classroom.png"</span>, <span class="nm">transition</span>: <span class="str">"fade"</span>, <span class="nm">duration</span>: <span class="nu">800</span>)
+<span class="fn">effect</span>(<span class="nm">type</span>: <span class="str">"shake"</span>, <span class="nm">intensity</span>: <span class="nu">5</span>, <span class="nm">duration</span>: <span class="nu">600</span>)</pre>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="cmd-chara">
+      <h2>👤 キャラクター</h2>
+      <h3>showChara / moveChara / hideChara</h3>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="fn">showChara</span>(<span class="nm">id</span>: <span class="str">"asaba"</span>, <span class="nm">expression</span>: <span class="str">"surprised"</span>, <span class="nm">position</span>: <span class="str">"right"</span>, <span class="nm">fade</span>: <span class="nu">300</span>)
+<span class="fn">moveChara</span>(<span class="nm">id</span>: <span class="str">"asaba"</span>, <span class="nm">to</span>: <span class="str">"center"</span>, <span class="nm">duration</span>: <span class="nu">600</span>)
+<span class="fn">hideChara</span>(<span class="nm">id</span>: <span class="str">"all"</span>, <span class="nm">fade</span>: <span class="nu">500</span>)</pre>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="cmd-audio">
+      <h2>🎵 BGM・SE・ボイス</h2>
+      <table class="cmd-t">
+        <tr><th>コマンド</th><th>主なパラメータ</th><th>説明</th></tr>
+        <tr><td class="tn">playBGM</td><td class="tp">file, loop, volume, fadeIn</td><td>BGMを再生（デフォルトでループ）</td></tr>
+        <tr><td class="tn">stopBGM</td><td class="tp">fadeOut</td><td>BGMをフェードアウトして停止</td></tr>
+        <tr><td class="tn">playSE</td><td class="tp">file, volume</td><td>効果音を再生</td></tr>
+      </table>
+    </div>
+
+    <div class="doc-sec" id="cmd-choice">
+      <h2>🔀 選択肢・分岐</h2>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="fn">choice</span>([
+  { <span class="nm">label</span>: <span class="str">"「ええ、よくここで考えごとを」"</span>, <span class="nm">jump</span>: <span class="str">"route_a"</span> },
+  { <span class="nm">label</span>: <span class="str">"「あなたこそ、何を見ているの？」"</span>, <span class="nm">jump</span>: <span class="str">"route_b"</span> },
+  { <span class="nm">label</span>: <span class="str">"「…何でもない」"</span>, <span class="nm">jump</span>: <span class="str">"route_c"</span> }
+])</pre>
+      </div>
+      <h3>if / else / endif</h3>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="kw">if</span> (<span class="nm">love_point</span> >= <span class="nu">80</span>)   <span class="fn">jump</span>(<span class="str">"good_ending"</span>)
+<span class="kw">else if</span> (<span class="nm">love_point</span> >= <span class="nu">40</span>) <span class="fn">jump</span>(<span class="str">"normal_ending"</span>)
+<span class="kw">else</span>                      <span class="fn">jump</span>(<span class="str">"bad_ending"</span>)
+<span class="kw">endif</span></pre>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="cmd-var">
+      <h2>📊 変数・フラグ</h2>
+      <div class="nc-code-block">
+        <div class="nc-code-bar"><span class="nc-code-lang">例</span><button class="nc-code-cp" onclick="copyCode(this)">コピー</button></div>
+        <pre><span class="fn">setVar</span>(<span class="nm">name</span>: <span class="str">"love_point"</span>, <span class="nm">value</span>: <span class="nu">0</span>)
+<span class="fn">setVar</span>(<span class="nm">name</span>: <span class="str">"love_point"</span>, <span class="nm">value</span>: <span class="nu">10</span>, <span class="nm">op</span>: <span class="str">"add"</span>)
+<span class="fn">setVar</span>(<span class="nm">name</span>: <span class="str">"flag_met"</span>,   <span class="nm">value</span>: <span class="kw">true</span>)</pre>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="cmd-sys">
+      <h2>⚙️ システムコマンド</h2>
+      <table class="cmd-t">
+        <tr><th>コマンド</th><th>パラメータ</th><th>説明</th></tr>
+        <tr><td class="tn">wait</td><td class="tp">ms: number</td><td>指定ミリ秒待機</td></tr>
+        <tr><td class="tn">jump</td><td class="tp">label: string</td><td>指定ラベルにジャンプ</td></tr>
+        <tr><td class="tn">label</td><td class="tp">name: string</td><td>ジャンプ先ラベルを定義</td></tr>
+        <tr><td class="tn">save</td><td class="tp">—</td><td>セーブ画面を開く</td></tr>
+        <tr><td class="tn">load</td><td class="tp">—</td><td>ロード画面を開く</td></tr>
+        <tr><td class="tn">end</td><td class="tp">—</td><td>シナリオ終了</td></tr>
+      </table>
+    </div>
+
+    <div class="doc-sec" id="export">
+      <h2>📦 エクスポート</h2>
+      <p>メニューバーの「Export」からゲームを書き出せます。</p>
+      <table class="cmd-t">
+        <tr><th>形式</th><th>出力物</th><th>配布方法</th></tr>
+        <tr><td class="tn">Windows EXE</td><td>配布フォルダ一式</td><td>ZIPで圧縮して配布</td></tr>
+        <tr><td class="tn">macOS App</td><td>.app バンドル</td><td>.dmg化して配布</td></tr>
+        <tr><td class="tn">HTML5 Web</td><td>html フォルダ</td><td>Webサーバーにアップロード</td></tr>
+      </table>
+      <!-- ▼ スクショ：エクスポートダイアログ -->
+      <div class="doc-img">
+        <div class="nc-ph" style="min-height:200px">
+          <div class="nc-ph-ico">📦</div>
+          <div class="nc-ph-title">スクリーンショット：エクスポートダイアログ</div>
+          <div class="nc-ph-sub">assets/screenshots/export-dialog.png</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-sec" id="roadmap">
+      <h2>🗺️ ロードマップ</h2>
+      <table class="cmd-t">
+        <tr><th>機能</th><th>状態</th><th>バージョン目標</th></tr>
+        <tr><td>基本テキスト・背景・キャラクター</td><td><span class="nc-badge nc-b-green">✓ 実装済み</span></td><td>v0.9.x</td></tr>
+        <tr><td>セーブ/ロード・バックログ</td><td><span class="nc-badge nc-b-green">✓ 実装済み</span></td><td>v0.9.x</td></tr>
+        <tr><td>HTML5エクスポート</td><td><span class="nc-badge nc-b-green">✓ 実装済み</span></td><td>v0.9.x</td></tr>
+        <tr><td>AIアシスト機能</td><td><span class="nc-badge nc-b-gold">🔨 開発中</span></td><td>v1.0</td></tr>
+        <tr><td>プラグインシステム</td><td><span class="nc-badge nc-b-gold">🔨 開発中</span></td><td>v1.0</td></tr>
+        <tr><td>Android APK出力</td><td><span class="nc-badge nc-b-blue">📅 予定</span></td><td>v1.1</td></tr>
+        <tr><td>共同編集機能</td><td><span class="nc-badge nc-b-blue">📅 予定</span></td><td>v1.2+</td></tr>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<footer class="nc-footer">
+  <div class="nc-ft-in">
+    <div class="nc-ft-grid">
+      <div><div class="nc-ft-logo">NovelCraft</div><p class="nc-ft-tag">プログラミング不要のノベルゲームエンジン。</p></div>
+      <div class="nc-ft-col"><h5>製品</h5><ul><li><a href="download.html">ダウンロード</a></li><li><a href="docs.html">ドキュメント</a></li></ul></div>
+      <div class="nc-ft-col"><h5>コミュニティ</h5><ul><li><a href="showcase.html">作品集</a></li><li><a href="#">Discord</a></li></ul></div>
+      <div class="nc-ft-col"><h5>その他</h5><ul><li><a href="donate.html">開発をサポート</a></li><li><a href="mailto:support@novelcraft.dev">お問い合わせ</a></li></ul></div>
+    </div>
+    <div class="nc-ft-bot"><span>© 2026 NovelCraft. All rights reserved.</span><span>Made with ❤ by NOAH</span></div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+<script>
+document.querySelectorAll('.doc-sec').forEach(sec=>{
+  new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.sb-a').forEach(l=>l.classList.remove('on'));
+      document.querySelector(`.sb-a[href="#${sec.id}"]`)?.classList.add('on');
+    }
+  }),{rootMargin:'-15% 0px -75% 0px'}).observe(sec);
+});
+document.getElementById('docsQ').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('.doc-sec').forEach(s=>{
+    s.style.display=(!q||s.innerText.toLowerCase().includes(q))?'':'none';
+  });
+});
+</script>
+</body>
+</html>

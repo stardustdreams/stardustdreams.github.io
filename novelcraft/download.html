@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ダウンロード — NovelCraft</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+.dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-bottom:2.5rem}
+.dl-card{background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r3);padding:2.2rem 1.7rem;text-align:center;position:relative;transition:all var(--nc-t)}
+.dl-card:hover{border-color:var(--nc-bd2);transform:translateY(-4px);box-shadow:0 20px 45px rgba(0,0,0,.4)}
+.dl-card.rec{border-color:var(--nc-bd2);background:linear-gradient(160deg,var(--nc-card),rgba(200,171,92,.04))}
+.dl-card.rec::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--nc-gold),transparent)}
+.rec-tag{position:absolute;top:.9rem;right:.9rem;font-family:var(--nc-fm);font-size:.6rem;letter-spacing:.1em;background:var(--nc-gold);color:var(--nc-bg);padding:.17rem .52rem;border-radius:2rem}
+.dl-ico{font-size:3rem;margin-bottom:.85rem}
+.dl-nm{font-family:var(--nc-fd);font-size:1.65rem;font-weight:300;margin-bottom:.28rem}
+.dl-ver{font-family:var(--nc-fm);font-size:.68rem;color:var(--nc-gold);margin-bottom:.2rem}
+.dl-sz{font-size:.76rem;color:var(--nc-tx3);margin-bottom:1.15rem}
+.dl-req{font-size:.77rem;color:var(--nc-tx2);margin-bottom:1.7rem;line-height:1.75}
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:.42rem;width:100%;padding:.75rem 1rem;border-radius:var(--nc-r1);font-size:.78rem;font-weight:500;letter-spacing:.06em;cursor:pointer;border:none;text-decoration:none;transition:all var(--nc-t)}
+.db-p{background:var(--nc-gold);color:var(--nc-bg)}.db-p:hover{background:var(--nc-gold2);color:var(--nc-bg);transform:translateY(-1px);box-shadow:0 6px 18px rgba(200,171,92,.28)}
+.db-o{background:transparent;color:var(--nc-gold2);border:1px solid var(--nc-bd2);margin-top:.55rem}.db-o:hover{background:var(--nc-gp);color:var(--nc-gold2)}
+.db-d{background:rgba(255,255,255,.04);color:var(--nc-tx3);border:1px solid var(--nc-bd)}
+.notice{background:rgba(200,171,92,.07);border:1px solid var(--nc-bd2);border-radius:var(--nc-r2);padding:1.15rem 1.5rem;display:flex;gap:.9rem;align-items:flex-start;margin-bottom:2.5rem}
+.notice p{font-size:.83rem;color:var(--nc-tx2);margin:0}
+.notice strong{color:var(--nc-gold2)}
+.sys-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:2.5rem}
+.sys-card{background:var(--nc-card);border:1px solid var(--nc-bd);border-radius:var(--nc-r2);padding:1.6rem}
+.sys-card h4{font-family:var(--nc-fd);font-size:1.15rem;font-weight:300;margin-bottom:1rem}
+.sys-t{width:100%;border-collapse:collapse}
+.sys-t td{padding:.45rem 0;font-size:.82rem;border-bottom:1px solid var(--nc-bd)}
+.sys-t td:first-child{color:var(--nc-tx2);width:42%}
+.sys-t tr:last-child td{border-bottom:none}
+.cl-item{padding:1.3rem 1.3rem 1.3rem 1.9rem;border-left:2px solid var(--nc-bd);margin-bottom:.8rem;position:relative;transition:border-color var(--nc-t)}
+.cl-item::before{content:'';position:absolute;left:-5px;top:1.6rem;width:8px;height:8px;border-radius:50%;background:var(--nc-bg);border:2px solid var(--nc-bd);transition:all var(--nc-t)}
+.cl-item:hover{border-color:var(--nc-gold)}.cl-item:hover::before{border-color:var(--nc-gold);background:var(--nc-gp2)}
+.cl-ver{font-family:var(--nc-fm);font-size:.74rem;color:var(--nc-gold);margin-bottom:.22rem}
+.cl-date{font-size:.7rem;color:var(--nc-tx3);margin-bottom:.65rem}
+.cl-tags{display:flex;flex-wrap:wrap;gap:.32rem}
+.cl-tag{font-size:.65rem;padding:.15rem .52rem;border-radius:2rem;font-family:var(--nc-fm)}
+.t-new{background:rgba(60,160,80,.12);color:#7ecb8e;border:1px solid rgba(60,160,80,.28)}
+.t-fix{background:rgba(74,111,165,.12);color:#89afd4;border:1px solid rgba(74,111,165,.28)}
+.t-imp{background:var(--nc-gp2);color:var(--nc-gold2);border:1px solid rgba(200,171,92,.28)}
+.t-brk{background:rgba(180,70,70,.12);color:#e08080;border:1px solid rgba(180,70,70,.28)}
+.nc-faq-item{border-bottom:1px solid var(--nc-bd)}
+.nc-faq-q{width:100%;background:none;border:none;text-align:left;padding:1.05rem 0;font-family:var(--nc-fb);font-size:.87rem;color:var(--nc-tx);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;transition:color var(--nc-t)}
+.nc-faq-q:hover{color:var(--nc-gold2)}
+.nc-faq-ic{color:var(--nc-gold);font-size:1.1rem;flex-shrink:0;transition:transform var(--nc-t)}
+.nc-faq-item.open .nc-faq-ic{transform:rotate(45deg)}
+.nc-faq-a{display:none;padding-bottom:1.05rem;font-size:.85rem;color:var(--nc-tx2);line-height:1.85}
+.nc-faq-item.open .nc-faq-a{display:block}
+.scr2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin:1.8rem 0}
+@media(max-width:768px){.dl-grid{grid-template-columns:1fr}.sys-grid{grid-template-columns:1fr}.scr2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="nc-noise"></div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">NovelCraft<span class="nav-ver">Beta</span></a>
+  <div class="nav-links">
+    <a href="index.html">ホーム</a>
+    <a href="download.html" class="active">ダウンロード</a>
+    <a href="docs.html">ドキュメント</a>
+    <a href="showcase.html">作品集</a>
+    <a href="donate.html">サポート</a>
+    <a href="download.html" class="nav-dl">無料で始める</a>
+  </div>
+  <button class="nav-burger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nc-hero-wrap">
+  <div style="max-width:var(--nc-max);margin:0 auto">
+    <div class="nc-fu">
+      <div class="nc-eye">Free Download</div>
+      <h1 style="font-size:clamp(2.2rem,4.5vw,3.8rem);margin:.6rem 0">今すぐ無料でダウンロード</h1>
+      <div class="nc-div"></div>
+      <p class="nc-lead" style="margin-top:.9rem">登録不要・永続無料。商用利用も完全に自由です。</p>
+    </div>
+  </div>
+</div>
+
+<section class="nc-sec" style="padding-top:0">
+  <div class="nc-wrap">
+    <!-- DL Cards -->
+    <div class="dl-grid">
+      <div class="dl-card rec nc-fu nc-d1">
+        <span class="rec-tag">推奨</span>
+        <div class="dl-ico">🪟</div>
+        <div class="dl-nm">Windows</div>
+        <div class="dl-ver">v0.4.0-beta</div>
+        <div class="dl-sz">約 133 MB（ZIP）</div>
+        <div class="dl-req">Windows 10 / 11 (64-bit)<br>RAM 4GB 以上推奨</div>
+        <a href="https://github.com/stardustdreams/stardustdreams.github.io/releases/download/v0.4.0-beta/NovelCraft-0.4.0-beta-win-x64.zip" class="dl-btn db-p">⬇ ZIPをダウンロード</a>
+        <div style="font-size:.68rem;color:var(--nc-tx3);margin-top:.6rem">展開してNovelCraft.exeを実行してください（インストーラー版は準備中）</div>
+      </div>
+      <div class="dl-card nc-fu nc-d2">
+        <div class="dl-ico">🍎</div>
+        <div class="dl-nm">macOS</div>
+        <div class="dl-ver">近日公開</div>
+        <div class="dl-sz">—</div>
+        <div class="dl-req">macOS 12 Monterey 以降<br>Apple Silicon / Intel 対応予定</div>
+        <a href="https://github.com/stardustdreams/stardustdreams.github.io/releases" class="dl-btn db-d" style="pointer-events:none;opacity:.55">近日公開</a>
+      </div>
+      <div class="dl-card nc-fu nc-d3">
+        <div class="dl-ico">🌐</div>
+        <div class="dl-nm">Web版</div>
+        <div class="dl-ver">近日公開</div>
+        <div class="dl-sz">インストール不要</div>
+        <div class="dl-req">Chrome / Edge / Firefox<br>Safari / Brave 対応予定</div>
+        <a href="https://github.com/stardustdreams/stardustdreams.github.io/releases" class="dl-btn db-d" style="pointer-events:none;opacity:.55">近日公開</a>
+      </div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice nc-fu">
+      <span style="font-size:1rem;flex-shrink:0">⚠️</span>
+      <p><strong>現在ベータ版です</strong>　バグや未実装機能が含まれる場合があります。<a href="donate.html#contact">お問い合わせフォーム</a>からご報告いただけると助かります。大切なプロジェクトは定期的にバックアップを取ってください。</p>
+    </div>
+
+    <!-- ▼ スクリーンショット：インストール画面 -->
+    <div class="scr2 nc-fu">
+      <div>
+        <p style="font-size:.76rem;color:var(--nc-tx3);font-family:var(--nc-fm);margin-bottom:.55rem">🪟 Windows インストール画面</p>
+        <div class="nc-ph" style="min-height:180px">
+          <div class="nc-ph-ico">📸</div>
+          <div class="nc-ph-title">インストーラー画面</div>
+          <div class="nc-ph-sub">assets/screenshots/install-win.png</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:.76rem;color:var(--nc-tx3);font-family:var(--nc-fm);margin-bottom:.55rem">🍎 macOS 起動後の画面</p>
+        <div class="nc-ph" style="min-height:180px">
+          <div class="nc-ph-ico">📸</div>
+          <div class="nc-ph-title">macOS 初回起動</div>
+          <div class="nc-ph-sub">assets/screenshots/install-mac.png</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Requirements -->
+    <div style="margin-bottom:1.4rem" class="nc-fu">
+      <div class="nc-eye">System Requirements</div>
+      <h2 style="margin:.5rem 0 1.4rem">動作環境</h2>
+    </div>
+    <div class="sys-grid nc-fu">
+      <div class="sys-card">
+        <h4>🪟 Windows</h4>
+        <table class="sys-t">
+          <tr><td>OS</td><td>Windows 10 / 11 (64-bit)</td></tr>
+          <tr><td>CPU</td><td>Core i3 / Ryzen 3 以上</td></tr>
+          <tr><td>RAM</td><td>4GB（推奨: 8GB）</td></tr>
+          <tr><td>ストレージ</td><td>300MB 以上</td></tr>
+          <tr><td>GPU</td><td>DirectX 11 対応</td></tr>
+        </table>
+      </div>
+      <div class="sys-card">
+        <h4>🍎 macOS</h4>
+        <table class="sys-t">
+          <tr><td>OS</td><td>macOS 12 Monterey 以降</td></tr>
+          <tr><td>CPU</td><td>Apple M1 / Core i5 以上</td></tr>
+          <tr><td>RAM</td><td>4GB（推奨: 8GB）</td></tr>
+          <tr><td>ストレージ</td><td>300MB 以上</td></tr>
+          <tr><td>その他</td><td>Universal Binary 対応</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Changelog -->
+    <div class="nc-fu" id="changelog" style="margin-bottom:1.4rem">
+      <div class="nc-eye">Changelog</div>
+      <h2 style="margin:.5rem 0 1.4rem">更新履歴</h2>
+    </div>
+    <div class="nc-fu">
+      <div class="cl-item">
+        <div class="cl-ver">v0.4.0-beta — 最新</div>
+        <div class="cl-date">2026年7月31日</div>
+        <div class="cl-tags">
+          <span class="cl-tag t-new">New: キャラクターパーツ合成システム（差分をパーツ単位で重ね合わせ）</span>
+          <span class="cl-tag t-new">New: エンディングコマンド</span>
+          <span class="cl-tag t-imp">Improve: 各種UI調整</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="nc-fu" style="margin-top:3rem;margin-bottom:1.4rem">
+      <div class="nc-eye">FAQ</div>
+      <h2 style="margin:.5rem 0 1.4rem">よくある質問</h2>
+    </div>
+    <div class="nc-fu">
+      <div class="nc-faq-item"><button class="nc-faq-q"><span>本当に無料で商用利用できますか？</span><span class="nc-faq-ic">+</span></button><div class="nc-faq-a">はい、完全に無料です。エンジン本体の使用料・ロイヤリティは一切かかりません。作成したゲームの販売・配布・配信は自由です。クレジット表記も任意です。</div></div>
+      <div class="nc-faq-item"><button class="nc-faq-q"><span>macOS版でセキュリティ警告が出ます</span><span class="nc-faq-ic">+</span></button><div class="nc-faq-a">「システム設定 → プライバシーとセキュリティ」から「このまま開く」を選択してください。Apple Developer Programへの登録を準備中です。</div></div>
+      <div class="nc-faq-item"><button class="nc-faq-q"><span>作成したゲームの配布方法は？</span><span class="nc-faq-ic">+</span></button><div class="nc-faq-a">Windows EXE版はフォルダごとZIPで配布できます。HTML5版はWebサーバーにアップするだけです。DLsiteやitch.ioへの掲載も可能です。</div></div>
+      <div class="nc-faq-item"><button class="nc-faq-q"><span>以前のバージョンのプロジェクトは使えますか？</span><span class="nc-faq-ic">+</span></button><div class="nc-faq-a">v0.9.0以降のプロジェクトはすべて互換性があります。v0.8.x以前はマイグレーションツールで変換できます。</div></div>
+      <div class="nc-faq-item"><button class="nc-faq-q"><span>スマートフォンに対応していますか？</span><span class="nc-faq-ic">+</span></button><div class="nc-faq-a">エディタ自体はPC専用ですが、HTML5エクスポートで出力したゲームはスマートフォンのブラウザでプレイできます。Android APK出力は今後追加予定です。</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="nc-footer">
+  <div class="nc-ft-in">
+    <div class="nc-ft-grid">
+      <div><div class="nc-ft-logo">NovelCraft</div><p class="nc-ft-tag">プログラミング不要のノベルゲームエンジン。</p></div>
+      <div class="nc-ft-col"><h5>製品</h5><ul><li><a href="download.html">ダウンロード</a></li><li><a href="docs.html">ドキュメント</a></li><li><a href="docs.html#changelog">更新履歴</a></li></ul></div>
+      <div class="nc-ft-col"><h5>コミュニティ</h5><ul><li><a href="showcase.html">作品集</a></li><li><a href="#">Discord</a></li><li><a href="https://github.com/stardustdreams/stardustdreams.github.io/releases">GitHub</a></li></ul></div>
+      <div class="nc-ft-col"><h5>その他</h5><ul><li><a href="donate.html">開発をサポート</a></li><li><a href="mailto:support@novelcraft.dev">お問い合わせ</a></li></ul></div>
+    </div>
+    <div class="nc-ft-bot"><span>© 2026 NovelCraft. All rights reserved.</span><span>Made with ❤ by NOAH</span></div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+</body>
+</html>

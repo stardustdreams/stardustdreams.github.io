@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>NovelCraft — あなたの物語を、世界へ</title>
+  <meta name="description" content="プログラミング不要でプロ品質のノベルゲームを作れる無料エンジン。Windows・Mac・Web対応。"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+#nc-cv{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero-in{position:relative;z-index:2;width:100%;max-width:var(--nc-max);margin:0 auto;padding:calc(var(--nc-nav)+clamp(4rem,9vw,8rem)) var(--nc-px) clamp(4rem,8vw,7rem)}
+.hero-tag{display:flex;align-items:center;gap:.9rem;margin-bottom:1.8rem;opacity:0;animation:ncFu .8s .15s forwards}
+.hero-tag-line{width:36px;height:1px;background:var(--nc-gold)}
+.hero-tag span{font-family:var(--nc-fm);font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--nc-gold)}
+.hero-h1{line-height:1.05;margin-bottom:1.8rem;opacity:0;animation:ncFu .8s .3s forwards}
+.hero-h1 em{font-style:italic;color:var(--nc-gold2)}
+.hero-desc{font-size:.98rem;color:var(--nc-tx2);max-width:490px;line-height:1.92;margin-bottom:2.4rem;opacity:0;animation:ncFu .8s .45s forwards}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;opacity:0;animation:ncFu .8s .6s forwards}
+.hero-stats{display:flex;gap:2.4rem;flex-wrap:wrap;margin-top:3.8rem;padding-top:2.2rem;border-top:1px solid var(--nc-bd);opacity:0;animation:ncFu .8s .76s forwards}
+.hs-n{font-family:var(--nc-fd);font-size:2.3rem;color:var(--nc-gold2);line-height:1}
+.hs-l{font-size:.75rem;color:var(--nc-tx3);margin-top:.28rem}
+.fc-ico{font-size:1.85rem;margin-bottom:.9rem}
+.fc-t{font-size:1.05rem;font-family:var(--nc-fd);font-weight:300;letter-spacing:.03em;margin-bottom:.5rem}
+.fc-d{font-size:.87rem;color:var(--nc-tx2);line-height:1.8}
+.ed-wrap{border-radius:14px;border:1px solid var(--nc-bd);overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.55);background:var(--nc-card)}
+.ed-bar{display:flex;align-items:center;gap:.45rem;padding:.65rem 1.1rem;background:rgba(0,0,0,.5);border-bottom:1px solid var(--nc-bd)}
+.ed-dot{width:10px;height:10px;border-radius:50%}
+.ed-dot-r{background:#ff5f57}.ed-dot-y{background:#febc2e}.ed-dot-g{background:#28c840}
+.ed-bar-t{font-family:var(--nc-fm);font-size:.7rem;color:var(--nc-tx3);margin-left:.4rem}
+.ed-body{display:grid;grid-template-columns:180px 1fr 250px;min-height:330px}
+.ed-side{background:rgba(0,0,0,.35);border-right:1px solid var(--nc-bd);padding:.85rem}
+.ed-grp{font-family:var(--nc-fm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--nc-tx3);padding:.65rem .45rem .2rem}
+.ed-item{font-size:.74rem;color:var(--nc-tx3);padding:.35rem .45rem;border-radius:3px;margin-bottom:1px}
+.ed-item.on{background:var(--nc-gp);color:var(--nc-gold2)}
+.ed-main{padding:1.2rem;overflow:hidden}
+.ed-scene{font-family:var(--nc-fm);font-size:.67rem;color:var(--nc-tx3);margin-bottom:1rem}
+.ed-blk{background:rgba(0,0,0,.3);border:1px solid var(--nc-bd);border-radius:4px;padding:.82rem;margin-bottom:.55rem}
+.ed-who{font-family:var(--nc-fm);font-size:.63rem;color:var(--nc-gold);margin-bottom:.22rem}
+.ed-txt{font-size:.77rem;color:var(--nc-tx);line-height:1.75}
+.ed-ch{display:flex;gap:.4rem;align-items:center;background:var(--nc-gp);border:1px solid var(--nc-bd2);border-radius:4px;padding:.4rem .65rem;margin-bottom:.32rem;font-size:.73rem;color:var(--nc-gold2)}
+.ed-props{border-left:1px solid var(--nc-bd);background:rgba(0,0,0,.22);padding:.85rem}
+.ed-pt{font-family:var(--nc-fm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--nc-tx3);margin-bottom:.85rem}
+.ed-field{margin-bottom:.62rem}
+.ed-label{font-size:.65rem;color:var(--nc-tx3);margin-bottom:.2rem}
+.ed-val{background:rgba(0,0,0,.4);border:1px solid var(--nc-bd);border-radius:3px;padding:.3rem .5rem;font-size:.69rem;color:var(--nc-tx2);font-family:var(--nc-fm)}
+.ed-pv{border-radius:5px;overflow:hidden;border:1px solid var(--nc-bd);margin-top:.82rem}
+.ed-pv-bg{height:68px;background:linear-gradient(135deg,#1a2038,#2a1538);position:relative;display:flex;align-items:flex-end;padding:.35rem}
+.ed-pv-moon{position:absolute;top:8px;right:8px;font-size:.82rem}
+.ed-pv-tb{background:rgba(0,0,0,.78);border:1px solid var(--nc-bd);border-radius:3px;padding:.27rem .46rem;width:100%}
+.ed-pv-nm{font-size:.57rem;color:var(--nc-gold)}
+.ed-pv-ln{font-size:.57rem;color:var(--nc-tx2)}
+.steps{display:flex;position:relative}
+.steps::before{content:'';position:absolute;top:25px;left:58px;right:58px;height:1px;background:linear-gradient(90deg,var(--nc-bd),var(--nc-bd2),var(--nc-bd))}
+.step{flex:1;text-align:center;padding:0 .65rem}
+.step-n{width:50px;height:50px;border-radius:50%;background:var(--nc-card);border:1px solid var(--nc-bd2);display:flex;align-items:center;justify-content:center;font-family:var(--nc-fd);font-size:1.3rem;color:var(--nc-gold2);margin:0 auto .9rem;position:relative;z-index:1;transition:all var(--nc-t)}
+.step:hover .step-n{background:var(--nc-gp2);box-shadow:0 0 20px rgba(200,171,92,.22)}
+.step-t{font-size:.88rem;margin-bottom:.36rem}
+.step-d{font-size:.79rem;color:var(--nc-tx2)}
+.nc-cta{border:1px solid var(--nc-bd);border-radius:18px;background:var(--nc-card);text-align:center;padding:clamp(2.5rem,6vw,5.5rem) clamp(1.5rem,5vw,4rem);position:relative;overflow:hidden}
+.nc-cta::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:220px;height:1px;background:linear-gradient(90deg,transparent,var(--nc-gold),transparent)}
+@keyframes ncFu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.ed-body{grid-template-columns:1fr}.ed-side,.ed-props{display:none}.steps{flex-direction:column;gap:1.8rem}.steps::before{display:none}}
+  </style>
+</head>
+<body>
+<div class="nc-noise"></div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">NovelCraft<span class="nav-ver">Beta</span></a>
+  <div class="nav-links">
+    <a href="index.html" class="active">ホーム</a>
+    <a href="download.html">ダウンロード</a>
+    <a href="docs.html">ドキュメント</a>
+    <a href="showcase.html">作品集</a>
+    <a href="donate.html">サポート</a>
+    <a href="download.html" class="nav-dl">無料で始める</a>
+  </div>
+  <button class="nav-burger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="hero">
+  <canvas id="nc-cv"></canvas>
+  <div class="hero-in">
+    <div class="hero-tag"><div class="hero-tag-line"></div><span>Novel Game Engine — 完全無料・商用利用可</span></div>
+    <h1 class="hero-h1">あなたの<em>物語</em>を、<br>世界へ届けよう</h1>
+    <p class="hero-desc">プログラミング不要でプロ品質のノベルゲームを作れる無料エンジン。直感的なGUIで制作し、Windows・Mac・Webへ配信できます。</p>
+    <div class="hero-btns">
+      <a href="download.html" class="nc-btn nc-btn-p">⬇ 無料ダウンロード</a>
+      <a href="docs.html"     class="nc-btn nc-btn-o">📖 使い方を見る</a>
+      <a href="showcase.html" class="nc-btn nc-btn-g">🎮 作品を遊ぶ</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-n"><span data-n="1200">0</span>+</div><div class="hs-l">ダウンロード</div></div>
+      <div><div class="hs-n"><span data-n="87">0</span></div><div class="hs-l">公開作品</div></div>
+      <div><div class="hs-n"><span data-n="3">0</span></div><div class="hs-l">対応 OS</div></div>
+      <div><div class="hs-n">無料</div><div class="hs-l">永続的に</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="nc-sec" style="background:linear-gradient(180deg,transparent,rgba(11,13,26,.8))">
+  <div class="nc-wrap">
+    <div class="nc-sh nc-fu">
+      <div class="nc-eye">Features</div>
+      <h2>なぜNovelCraftを選ぶのか</h2>
+      <div class="nc-div"></div>
+      <p class="nc-lead">他のツールにはないNovelCraftだけの強みをご紹介します</p>
+    </div>
+    <div class="nc-g3">
+      <div class="nc-card nc-fu nc-d1"><div class="fc-ico">🖱️</div><div class="fc-t">ノーコードで作れる</div><p class="fc-d">ドラッグ＆ドロップのGUIエディタで、プログラミング知識ゼロでプロ品質のゲームが完成します。</p></div>
+      <div class="nc-card nc-fu nc-d2"><div class="fc-ico">🌐</div><div class="fc-t">3プラットフォーム対応</div><p class="fc-d">Windows EXE・macOS app・HTML5 Webの3形式でエクスポート。スマートフォンでも快適にプレイできます。</p></div>
+      <div class="nc-card nc-fu nc-d3"><div class="fc-ico">🆓</div><div class="fc-t">完全無料・商用利用可</div><p class="fc-d">エンジン本体は永続的に無料。作成したゲームの商用販売も自由。ロイヤリティ・利用料は一切かかりません。</p></div>
+      <div class="nc-card nc-fu nc-d1"><div class="fc-ico">🌿</div><div class="fc-t">ノード式フローチャート</div><p class="fc-d">選択肢や分岐をビジュアルなフローチャートで管理。複雑なストーリー構成も直感的に把握できます。</p></div>
+      <div class="nc-card nc-fu nc-d2"><div class="fc-ico">🎭</div><div class="fc-t">豊富な演出機能</div><p class="fc-d">立ち絵フェード・移動・差分、トランジション、BGM/SE管理など必要な演出を網羅しています。</p></div>
+      <div class="nc-card nc-fu nc-d3"><div class="fc-ico">🤖</div><div class="fc-t">AIアシスト機能</div><p class="fc-d">シナリオ作成をAIがサポート。セリフのブラッシュアップや展開提案で創作の幅を広げます。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="nc-sec">
+  <div class="nc-wrap">
+    <div class="nc-sh nc-fu">
+      <div class="nc-eye">Editor</div>
+      <h2>直感的なエディタ</h2>
+      <div class="nc-div"></div>
+      <p class="nc-lead">シナリオ執筆からリソース管理まですべてを一元管理できます</p>
+    </div>
+    <!-- ▼ スクショ枠：エディタ全体 -->
+    <div class="nc-fu" style="margin-bottom:2rem">
+      <div class="nc-ph" style="min-height:300px">
+        <div class="nc-ph-ico">🖥️</div>
+        <div class="nc-ph-title">スクリーンショット：エディタ全体</div>
+        <div class="nc-ph-sub">NovelCraftのメイン画面 → assets/screenshots/editor-main.png に配置してください</div>
+      </div>
+    </div>
+    <!-- モックアップ -->
+    <div class="ed-wrap nc-fu">
+      <div class="ed-bar">
+        <div class="ed-dot ed-dot-r"></div><div class="ed-dot ed-dot-y"></div><div class="ed-dot ed-dot-g"></div>
+        <span class="ed-bar-t">NovelCraft — 星降る夜の物語.ncproject</span>
+      </div>
+      <div class="ed-body">
+        <div class="ed-side">
+          <div class="ed-grp">シナリオ</div>
+          <div class="ed-item">📁 プロローグ</div>
+          <div class="ed-item on">📄 第1章: 出会い</div>
+          <div class="ed-item">📄 第2章: 謎</div>
+          <div class="ed-item">📄 エンディングA</div>
+          <div class="ed-grp">リソース</div>
+          <div class="ed-item">🖼 背景 (12)</div>
+          <div class="ed-item">👤 キャラクター (5)</div>
+          <div class="ed-item">🎵 BGM (8)</div>
+        </div>
+        <div class="ed-main">
+          <div class="ed-scene">Scene: 第1章 › 屋上 › 夕方</div>
+          <div class="ed-blk"><div class="ed-who">◆ ナレーション</div><div class="ed-txt">夕暮れに染まった屋上で、彼女は一人佇んでいた。</div></div>
+          <div class="ed-blk"><div class="ed-who">◆ 明日葉（驚き）</div><div class="ed-txt">「あなたも…ここに来るんですね」</div></div>
+          <div style="margin:.75rem 0;font-size:.64rem;color:var(--nc-tx3);font-family:var(--nc-fm)">◈ 選択肢分岐</div>
+          <div class="ed-ch"><span>▶</span>「ええ、よくここで考えごとを」→ ルートA</div>
+          <div class="ed-ch"><span>▶</span>「あなたこそ、何を見ているの？」→ ルートB</div>
+          <div class="ed-ch"><span>▶</span>「…何でもない」→ ルートC</div>
+        </div>
+        <div class="ed-props">
+          <div class="ed-pt">プロパティ</div>
+          <div class="ed-field"><div class="ed-label">背景</div><div class="ed-val">bg_rooftop_evening.png</div></div>
+          <div class="ed-field"><div class="ed-label">BGM</div><div class="ed-val">bgm_twilight.mp3</div></div>
+          <div class="ed-field"><div class="ed-label">キャラクター</div><div class="ed-val">明日葉（右・驚き）</div></div>
+          <div class="ed-pv">
+            <div class="ed-pv-bg">
+              <span class="ed-pv-moon">🌙</span>
+              <div class="ed-pv-tb"><div class="ed-pv-nm">明日葉</div><div class="ed-pv-ln">「あなたも…ここに来るんですね」</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="nc-sec" style="background:linear-gradient(180deg,rgba(11,13,26,.5),transparent)">
+  <div class="nc-wrap">
+    <div class="nc-sh nc-fu">
+      <div class="nc-eye">How to Start</div>
+      <h2>4ステップで始められる</h2>
+      <div class="nc-div"></div>
+    </div>
+    <div class="steps nc-fu">
+      <div class="step"><div class="step-n">1</div><div class="step-t">ダウンロード</div><div class="step-d">インストーラーを実行するだけ。1分で完了</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-t">プロジェクト作成</div><div class="step-d">ゲームタイプを選んで新規プロジェクトを作成</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-t">シナリオ制作</div><div class="step-d">GUIエディタでセリフ・背景・演出を配置</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-t">エクスポート</div><div class="step-d">ワンクリックでWin・Mac・Web用に書き出し</div></div>
+    </div>
+    <!-- ▼ スクショ枠：新規プロジェクト -->
+    <div class="nc-fu" style="margin-top:2.5rem">
+      <div class="nc-ph" style="min-height:190px">
+        <div class="nc-ph-ico">📁</div>
+        <div class="nc-ph-title">スクリーンショット：新規プロジェクト作成ダイアログ</div>
+        <div class="nc-ph-sub">assets/screenshots/new-project.png に保存</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="nc-sec">
+  <div class="nc-wrap">
+    <div class="nc-cta nc-fu">
+      <div class="nc-eye" style="margin-bottom:1.2rem">Free Download</div>
+      <h2 style="margin-bottom:.85rem">今すぐ、あなたの物語を動かそう</h2>
+      <div class="nc-div"></div>
+      <p class="nc-lead" style="margin:1.2rem auto 2.2rem">完全無料・登録不要。商用利用も配布もすべて自由です。</p>
+      <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap">
+        <a href="download.html" class="nc-btn nc-btn-p" style="font-size:.88rem;padding:.82rem 2.1rem">⬇ 無料ダウンロード</a>
+        <a href="docs.html"     class="nc-btn nc-btn-o">📖 ドキュメントを読む</a>
+      </div>
+      <p style="font-size:.75rem;color:var(--nc-tx3);margin-top:1.15rem">Windows 10/11 · macOS 12+ · Web Browser 対応</p>
+    </div>
+  </div>
+</section>
+
+<footer class="nc-footer">
+  <div class="nc-ft-in">
+    <div class="nc-ft-grid">
+      <div><div class="nc-ft-logo">NovelCraft</div><p class="nc-ft-tag">プログラミング不要のノベルゲームエンジン。あなたの物語を世界へ届けよう。</p></div>
+      <div class="nc-ft-col"><h5>製品</h5><ul><li><a href="download.html">ダウンロード</a></li><li><a href="docs.html">ドキュメント</a></li><li><a href="docs.html#changelog">更新履歴</a></li></ul></div>
+      <div class="nc-ft-col"><h5>コミュニティ</h5><ul><li><a href="showcase.html">作品集</a></li><li><a href="#">Discord</a></li><li><a href="https://github.com/stardustdreams/stardustdreams.github.io/releases">GitHub</a></li></ul></div>
+      <div class="nc-ft-col"><h5>その他</h5><ul><li><a href="donate.html">開発をサポート</a></li><li><a href="#">プライバシーポリシー</a></li><li><a href="mailto:support@novelcraft.dev">お問い合わせ</a></li></ul></div>
+    </div>
+    <div class="nc-ft-bot">
+      <span>© 2026 NovelCraft. All rights reserved.</span>
+      <span>Made with ❤ by NOAH — Powered by Electron &amp; PixiJS</span>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+<script>initParticles('nc-cv');</script>
+</body>
+</html>

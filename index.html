@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Stardust Dreams</title>
+<meta name="description" content="NOAHが個人開発するアプリ・作品の公式ポータル。NovelCraft（ノベルゲームエンジン）などを配布しています。"/>
+<link rel="icon" href="data:,">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:ital,wght@0,300;0,400&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --bg:      #07080f;
+  --card:    #111325;
+  --card2:   #151729;
+  --gold:    #c8ab5c;
+  --gold2:   #e0c070;
+  --gp:      rgba(200,171,92,.10);
+  --gp2:     rgba(200,171,92,.18);
+  --bd:      rgba(200,171,92,.14);
+  --bd2:     rgba(200,171,92,.42);
+  --tx:      #eae6d8;
+  --tx2:     #9b9378;
+  --tx3:     #504d3b;
+  --teal:    #3a8c88;
+  --r1:4px; --r2:10px; --r3:18px;
+  --t:.28s cubic-bezier(.4,0,.2,1);
+  --fd:'Cormorant Garamond','Times New Roman',serif;
+  --fb:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;
+  --fm:'DM Mono','Courier New',monospace;
+  --max:1100px;
+  --px:clamp(1.2rem,5vw,5.5rem);
+}
+
+body{
+  background:var(--bg);
+  color:var(--tx);
+  font-family:var(--fb);
+  font-weight:400;
+  line-height:1.8;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1px 1px at 8% 12%,rgba(255,255,255,.28) 0%,transparent 0%),
+    radial-gradient(1px 1px at 23% 67%,rgba(255,255,255,.18) 0%,transparent 0%),
+    radial-gradient(1.5px 1.5px at 39% 27%,rgba(255,255,255,.22) 0%,transparent 0%),
+    radial-gradient(1px 1px at 54% 83%,rgba(255,255,255,.15) 0%,transparent 0%),
+    radial-gradient(1px 1px at 68% 17%,rgba(255,255,255,.24) 0%,transparent 0%),
+    radial-gradient(1px 1px at 79% 53%,rgba(255,255,255,.20) 0%,transparent 0%),
+    radial-gradient(1.5px 1.5px at 89% 37%,rgba(255,255,255,.16) 0%,transparent 0%),
+    radial-gradient(1px 1px at 14% 44%,rgba(255,255,255,.13) 0%,transparent 0%),
+    radial-gradient(1px 1px at 59% 59%,rgba(255,255,255,.16) 0%,transparent 0%),
+    radial-gradient(1px 1px at 34% 89%,rgba(255,255,255,.12) 0%,transparent 0%),
+    radial-gradient(1px 1px at 46% 6%,rgba(255,255,255,.18) 0%,transparent 0%),
+    radial-gradient(1px 1px at 93% 73%,rgba(255,255,255,.14) 0%,transparent 0%);
+}
+
+.wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:0 var(--px)}
+
+header.hero{padding:clamp(4.5rem,12vw,7.5rem) var(--px) clamp(3rem,7vw,4.5rem);text-align:center}
+.eyebrow{font-family:var(--fm);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}
+.eyebrow::before{content:'✦ '}
+h1.title{font-family:var(--fd);font-weight:300;font-size:clamp(2.6rem,7vw,4.6rem);letter-spacing:.02em;margin-bottom:1.1rem}
+h1.title em{font-style:italic;color:var(--gold2)}
+p.lede{font-size:.98rem;color:var(--tx2);max-width:520px;margin:0 auto;line-height:1.95}
+
+main{padding-bottom:5rem}
+.section-head{text-align:center;margin-bottom:2.4rem}
+.section-head .eyebrow{margin-bottom:.7rem}
+.section-head h2{font-family:var(--fd);font-weight:300;font-size:clamp(1.5rem,3.5vw,2rem)}
+.div{width:44px;height:1px;background:var(--gold);margin:.9rem auto 0}
+
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem;margin-bottom:4rem}
+.app-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:var(--r3);padding:2.2rem 2rem;text-decoration:none;color:inherit;overflow:hidden;transition:all var(--t)}
+.app-card:hover{border-color:var(--bd2);transform:translateY(-4px);box-shadow:0 24px 50px rgba(0,0,0,.45)}
+.app-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity var(--t)}
+.app-card:hover::before{opacity:1}
+.app-badge{display:inline-flex;align-self:flex-start;font-family:var(--fm);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .6rem;border-radius:2rem;margin-bottom:1.1rem}
+.badge-live{background:rgba(60,160,80,.12);color:#7ecb8e;border:1px solid rgba(60,160,80,.28)}
+.badge-beta{background:var(--gp2);color:var(--gold2);border:1px solid rgba(200,171,92,.28)}
+.app-ico{font-size:2.1rem;margin-bottom:1rem}
+.app-name{font-family:var(--fd);font-weight:400;font-size:1.5rem;margin-bottom:.5rem}
+.app-desc{font-size:.85rem;color:var(--tx2);line-height:1.85;flex:1;margin-bottom:1.3rem}
+.app-link{font-family:var(--fm);font-size:.7rem;letter-spacing:.08em;color:var(--gold2);display:flex;align-items:center;gap:.4rem}
+.app-link::after{content:'→';transition:transform var(--t)}
+.app-card:hover .app-link::after{transform:translateX(4px)}
+
+.more{border:1px dashed var(--bd);border-radius:var(--r3);padding:2.2rem 2rem;text-align:center;color:var(--tx3);font-size:.82rem}
+
+footer{border-top:1px solid var(--bd);padding:2.2rem var(--px);text-align:center}
+footer p{font-size:.75rem;color:var(--tx3)}
+footer a{color:var(--tx2);text-decoration:none}
+footer a:hover{color:var(--gold2)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Stardust Dreams</div>
+    <h1 class="title">個人開発の<em>作品</em>を、<br>ここから</h1>
+    <p class="lede">NOAHが制作するアプリ・ゲーム・ツールをまとめた公式ポータルです。各作品の詳細・ダウンロードは下記から。</p>
+  </header>
+
+  <main>
+    <div class="section-head">
+      <div class="eyebrow">Apps &amp; Works</div>
+      <h2>作品一覧</h2>
+      <div class="div"></div>
+    </div>
+
+    <div class="apps">
+      <a class="app-card" href="novelcraft/">
+        <span class="app-badge badge-beta">Beta 公開中</span>
+        <div class="app-ico">📖</div>
+        <div class="app-name">NovelCraft</div>
+        <p class="app-desc">プログラミング不要でプロ品質のノベルゲームを作れる無料エンジン。Windows・Mac・Web対応。</p>
+        <span class="app-link">公式ページへ</span>
+      </a>
+
+    </div>
+
+    <div class="more">今後もアプリ・作品を追加予定です</div>
+  </main>
+
+  <footer>
+    <p>© 2026 Stardust Dreams — Developed by NOAH · <a href="https://github.com/stardustdreams">GitHub</a></p>
+  </footer>
+</div>
+
+</body>
+</html>
