@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>購入ありがとうございます — StoryForge</title>
+  <link rel="icon" href="data:,">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:#07080f;color:#eae6d8;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;
+      line-height:1.8;min-height:100vh;
+    }
+    a{color:#e0c070}
+    .wrap{max-width:560px;margin:0 auto;padding:6rem 1.5rem;text-align:center}
+    .ico{font-size:3rem;margin-bottom:1rem}
+    h1{font-size:1.6rem;font-weight:500}
+    .card{background:#111325;border:1px solid rgba(200,171,92,.42);border-radius:10px;padding:2rem;margin:2rem 0}
+    .key{font-family:'DM Mono','Courier New',monospace;font-size:1.3rem;letter-spacing:.06em;color:#e0c070;background:#07080f;border:1px solid rgba(200,171,92,.14);border-radius:4px;padding:1rem;word-break:break-all;margin-bottom:1rem}
+    .btn{display:inline-block;background:linear-gradient(135deg,#c8ab5c,#e0c070);color:#07080f;border:none;border-radius:4px;padding:.7rem 1.4rem;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none}
+    .steps{text-align:left;font-size:.84rem;color:#9b9378;line-height:2;margin-top:1.5rem}
+    .err{color:#e08080;font-size:.86rem;margin-top:1.5rem}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div id="ls-loading">
+    <div class="ico">⏳</div>
+    <h1>ライセンスを確認しています…</h1>
+  </div>
+
+  <div id="ls-result" style="display:none">
+    <div class="ico">🎉</div>
+    <h1>ご購入ありがとうございます！</h1>
+    <p style="color:#9b9378;font-size:.9rem;margin-top:.5rem">以下のライセンスキーをStoryForgeの設定パネルに入力してPro機能を有効化してください。</p>
+    <div class="card">
+      <div class="key" id="ls-key-text">-</div>
+      <button class="btn" onclick="copyKey()" id="ls-copy-btn">📋 コピーする</button>
+    </div>
+    <div class="steps">
+      1. StoryForgeを起動<br>
+      2. 設定パネル → 💎 Pro を開く<br>
+      3. 上記のキーを貼り付けて「有効化」をクリック
+    </div>
+  </div>
+
+  <div id="ls-error" style="display:none">
+    <div class="ico">⚠️</div>
+    <h1>ライセンスの取得に失敗しました</h1>
+    <p class="err" id="ls-error-msg">決済情報の確認中にエラーが発生しました。時間をおいて再度アクセスするか、購入時のメールに記載の連絡先までお問い合わせください。</p>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://server-graceful-dawn-28.fly.dev';
+
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get('session_id');
+  const loading = document.getElementById('ls-loading');
+  const result = document.getElementById('ls-result');
+  const errorBox = document.getElementById('ls-error');
+
+  if (!sessionId) {
+    loading.style.display = 'none';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/license/by-session?session_id=${encodeURIComponent(sessionId)}`);
+    if (!res.ok) throw new Error('status ' + res.status);
+    const data = await res.json();
+    document.getElementById('ls-key-text').textContent = data.license_key;
+    loading.style.display = 'none';
+    result.style.display = 'block';
+  } catch (err) {
+    console.error('[license-success] failed:', err);
+    loading.style.display = 'none';
+    errorBox.style.display = 'block';
+  }
+})();
+
+function copyKey() {
+  const text = document.getElementById('ls-key-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('ls-copy-btn');
+    btn.textContent = '✓ コピーしました';
+    setTimeout(() => btn.textContent = '📋 コピーする', 2000);
+  });
+}
+</script>
+</body>
+</html>
