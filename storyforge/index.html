@@ -70,7 +70,7 @@ footer a:hover{color:#e0c070}
   <a href="#top" class="nav-logo"><img src="assets/favicon.png" alt="StoryForge"/>StoryForge</a>
   <div class="nav-links">
     <a href="#download">ダウンロード</a>
-    <a href="#pro">Proを購入</a>
+    <a href="#pro">AIクレジット</a>
     <a href="tokushoho.html">特商法表記</a>
   </div>
 </nav>
@@ -81,7 +81,7 @@ footer a:hover{color:#e0c070}
   <p>創作者向けの世界観・キャラクター・プロット管理ツール。NovelCraftへのエクスポートにも対応しています。</p>
   <div class="hero-cta">
     <a href="#download" class="btn btn-p">ダウンロード</a>
-    <a href="#pro" class="btn btn-o">Proを購入</a>
+    <a href="#pro" class="btn btn-o">AIクレジット</a>
   </div>
 </div>
 
@@ -102,30 +102,34 @@ footer a:hover{color:#e0c070}
 
 <section id="pro">
   <div class="wrap">
-    <div class="sec-eye">StoryForge Pro</div>
-    <h2 class="sec-h">Proを購入</h2>
+    <div class="sec-eye">StoryForge AI</div>
+    <h2 class="sec-h">AIクレジットを購入</h2>
+    <p style="text-align:center;color:#9b9378;font-size:.85rem;max-width:520px;margin:0 auto 1.8rem">
+      自前のAPIキーなしでAIアシスト機能（キャラ・世界観・プロット生成）を使うためのクレジットです。
+      OpenAI等の自前APIキーを使う場合はクレジット不要・無料でご利用いただけます。
+    </p>
     <div class="pro-plans">
       <div class="pro-plan">
-        <div class="pro-plan-price">¥1,980</div>
-        <div class="pro-plan-label">買い切り・永続ライセンス</div>
-        <ul class="pro-plan-feat">
-          <li>Pro機能を永続的に利用可能</li>
-          <li>今後追加されるPro機能も利用可能</li>
-        </ul>
-        <button class="btn btn-p pro-buy-btn" onclick="startProCheckout('one_time', this)">購入する</button>
-      </div>
-      <div class="pro-plan">
         <div class="pro-plan-price">¥300<span>/月</span></div>
-        <div class="pro-plan-label">月額プラン</div>
+        <div class="pro-plan-label">月額サブスク・毎月200クレジット</div>
         <ul class="pro-plan-feat">
-          <li>買い切りと同じ機能を月額で</li>
+          <li>毎月クレジットが自動付与</li>
           <li>いつでも解約可能</li>
         </ul>
-        <button class="btn btn-o pro-buy-btn" onclick="startProCheckout('monthly', this)">購入する</button>
+        <button class="btn btn-p pro-buy-btn" onclick="startProCheckout('monthly', this)">購入する</button>
+      </div>
+      <div class="pro-plan">
+        <div class="pro-plan-price">¥500</div>
+        <div class="pro-plan-label">追加パック・150クレジット</div>
+        <ul class="pro-plan-feat">
+          <li>サブスク不要、都度購入</li>
+          <li>クレジットに有効期限なし</li>
+        </ul>
+        <button class="btn btn-o pro-buy-btn" onclick="startProCheckout('one_time', this)">購入する</button>
       </div>
     </div>
     <div id="pro-error"></div>
-    <p class="pro-note">🔒 Stripe Checkoutで安全に決済されます。購入後に発行されるライセンスキーは、StoryForgeアプリの設定パネル（💎 Pro）から有効化してください。</p>
+    <p class="pro-note">🔒 Stripe Checkoutで安全に決済されます。購入後に発行されるライセンスキーは、StoryForgeアプリの設定パネル（💎 StoryForge AI）から有効化してください。</p>
   </div>
 </section>
 
@@ -144,7 +148,7 @@ async function startProCheckout(plan, btn) {
   btn.textContent = '処理中...';
 
   try {
-    const res = await fetch(`${API_BASE}/api/checkout/storyforge/${plan}`, {
+    const res = await fetch(`${API_BASE}/api/checkout/storyforge_ai/${plan}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
