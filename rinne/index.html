@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Rinne — ローグライク制作エンジン</title>
+<meta name="description" content="Rinne（リンネ）は、ローグライク・ローグライトをプログラミングなしで作れる無料のゲームエンジン。ダンジョン・カード・サバイバー・ピンボール・ポーカー・メダルプッシャーのテンプレートから始めて、ルールも自由に書き換えられます。"/>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080f;--card:#111325;--card2:#151729;--tx:#eae6d8;--tx2:#c9c3ac;--tx3:#9b9378;
+  --gold:#e0c070;--gold-d:#c8ab5c;--vio:#b197fc;--vio-d:#7950f2;--bd:rgba(200,171,92,.18);
+}
+body{background:var(--bg);color:var(--tx);font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic UI',sans-serif;line-height:1.8}
+a{color:var(--gold);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;display:block}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+
+nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.9rem 16px;background:rgba(7,8,15,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--bd)}
+.nav-logo{color:var(--tx);font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:.55rem;white-space:nowrap}
+.nav-logo img{height:30px;width:30px;border-radius:8px}
+.nav-links{display:flex;gap:1.3rem;font-size:.85rem;flex-wrap:wrap;justify-content:flex-end}
+.nav-links a{color:var(--tx2)}
+.nav-links a:hover{color:var(--gold);text-decoration:none}
+
+.hero{text-align:center;padding:5rem 16px 3.5rem;background:radial-gradient(ellipse at 50% 0%,rgba(121,80,242,.22),transparent 60%)}
+.hero-logo{width:104px;height:104px;margin:0 auto 1.4rem;filter:drop-shadow(0 12px 30px rgba(121,80,242,.45))}
+.hero .badge{display:inline-block;font-size:.72rem;letter-spacing:.08em;color:var(--vio);border:1px solid rgba(177,151,252,.45);border-radius:99px;padding:.15rem .8rem;margin-bottom:1rem}
+.hero h1{font-size:clamp(2.1rem,6vw,3.1rem);font-weight:700;line-height:1.3;margin-bottom:.8rem}
+.hero h1 em{font-style:normal;color:var(--vio)}
+.hero p{color:var(--tx3);font-size:1rem;max-width:600px;margin:0 auto 2rem}
+.cta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;border:none;border-radius:6px;padding:.75rem 1.5rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn-p{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--bg)}
+.btn-p:hover{box-shadow:0 6px 18px rgba(224,192,112,.28)}
+.btn-o{background:transparent;color:var(--gold);border:1px solid rgba(200,171,92,.42)}
+.btn-o:hover{background:rgba(200,171,92,.07)}
+.hero-shot{max-width:960px;margin:3rem auto 0;border-radius:10px;border:1px solid rgba(177,151,252,.25);box-shadow:0 30px 70px rgba(0,0,0,.6);overflow:hidden}
+
+section{padding:4rem 0}
+.eye{font-size:.72rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem}
+h2{font-size:1.65rem;font-weight:700;margin-bottom:.6rem}
+.lead{color:var(--tx3);font-size:.95rem;max-width:720px;margin-bottom:2rem}
+
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.shot{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.shot img{aspect-ratio:1360/860;object-fit:cover;width:100%}
+.shot div{padding:.8rem 1rem 1rem}
+.shot b{display:block;font-size:.95rem}
+.shot span{font-size:.8rem;color:var(--tx3);line-height:1.7}
+
+.features{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.feat{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:1.4rem 1.5rem}
+.feat h3{font-size:1rem;margin-bottom:.4rem;color:var(--vio)}
+.feat p{font-size:.86rem;color:var(--tx2)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start}
+.split figure{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.split figcaption{font-size:.8rem;color:var(--tx3);padding:.7rem 1rem}
+
+.dl{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:1.4rem;align-items:start}
+.dl-card{background:var(--card);border:1px solid rgba(200,171,92,.3);border-radius:10px;padding:2rem;text-align:center}
+.dl-ico{font-size:2.4rem;margin-bottom:.4rem}
+.dl-nm{font-size:1.3rem;font-weight:700}
+.dl-status{font-size:.8rem;color:var(--tx3);margin-bottom:1.3rem}
+.dl-card .btn{display:block}
+.dl-small{font-size:.75rem;color:var(--tx3);margin-top:.8rem}
+.notes{background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:1.5rem 1.6rem;font-size:.85rem;color:var(--tx2)}
+.notes h3{font-size:.95rem;color:var(--tx);margin:1.1rem 0 .3rem}
+.notes h3:first-child{margin-top:0}
+.notes ul{padding-left:1.2rem}
+.notes code{background:rgba(255,255,255,.06);padding:.05rem .35rem;border-radius:4px;font-size:.82rem}
+
+footer{border-top:1px solid var(--bd);padding:2.2rem 16px;text-align:center;font-size:.76rem;color:#726b57}
+footer a{color:var(--tx3)}
+
+@media(max-width:820px){
+  .gallery{grid-template-columns:1fr 1fr}
+  .features,.split,.dl{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .gallery{grid-template-columns:1fr}
+  .nav-links{gap:.8rem;font-size:.78rem}
+  .hero{padding-top:3.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="nav-logo"><img src="assets/favicon.png" alt=""/>Rinne</a>
+  <div class="nav-links">
+    <a href="#templates">テンプレート</a>
+    <a href="#features">できること</a>
+    <a href="#download">ダウンロード</a>
+    <a href="../">作品一覧</a>
+  </div>
+</nav>
+
+<header id="top" class="hero">
+  <img src="assets/favicon.png" alt="Rinne" class="hero-logo"/>
+  <div class="badge">無料・ベータ版</div>
+  <h1>ローグライクを、<br><em>プログラミングなし</em>で。</h1>
+  <p><b>Rinne（リンネ）</b>は、ゲームの型をエンジンが決めない、ローグライク・ローグライト制作エンジンです。名前は、倒れても次のランへ生まれ変わる「輪廻」から。戦闘・死亡・敵の動き・階段まで、すべてが書き換えられる「ルール」のデータです。テンプレートを開いて、自分のゲームに作り変えてください。</p>
+  <div class="cta">
+    <a href="#download" class="btn btn-p">無料でダウンロード（Windows）</a>
+    <a href="#templates" class="btn btn-o">作れるゲームを見る</a>
+  </div>
+  <div class="hero-shot"><img src="assets/screenshots/editor-rules.jpg" alt="Rinne のエディター（ルールをフォームで編集している画面）" width="1440" height="860"/></div>
+</header>
+
+<main class="wrap">
+
+<section id="templates">
+  <div class="eye">Templates</div>
+  <h2>7つのテンプレートから始められます</h2>
+  <p class="lead">どれも最初から遊べる1本のゲームです。中身はすべて同じ仕組み（ルール・Blueprint・ゲームフロー）でできているので、見比べながら混ぜたり作り変えたりできます。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="assets/screenshots/classicdungeonimages.jpg" alt="Classic Dungeon の画面" loading="lazy"/><div><b>Classic Dungeon</b><span>昔ながらのターン制ダンジョン探索。文字で描く版と、画像で描く版があります。</span></div></figure>
+    <figure class="shot"><img src="assets/screenshots/deckbuilder.jpg" alt="Deckbuilder の画面" loading="lazy"/><div><b>Deckbuilder</b><span>カードを集めてデッキを育てる。ルートマップで進む部屋を選びます。</span></div></figure>
+    <figure class="shot"><img src="assets/screenshots/survivor.jpg" alt="Survivor の画面" loading="lazy"/><div><b>Survivor</b><span>押し寄せる群れから生き延びるリアルタイム型。同じ PC で2人協力も。</span></div></figure>
+    <figure class="shot"><img src="assets/screenshots/pinball.jpg" alt="Pinball の画面" loading="lazy"/><div><b>Pinball</b><span>物理で動く玉とフリッパーで魔物を倒す、ピンボール×ローグライト。</span></div></figure>
+    <figure class="shot"><img src="assets/screenshots/poker.jpg" alt="Poker の画面" loading="lazy"/><div><b>Poker</b><span>ポーカーの役で攻撃する。役の判定もルールと式で書かれています。</span></div></figure>
+    <figure class="shot"><img src="assets/screenshots/medalpusher.jpg" alt="MedalPusher の画面" loading="lazy"/><div><b>MedalPusher</b><span>メダルを押し出して財布をふくらませる、メダルプッシャー×ローグライト。</span></div></figure>
+  </div>
+</section>
+
+<section id="features">
+  <div class="eye">Features</div>
+  <h2>できること</h2>
+  <p class="lead">「エンジン側で創作を縛らない」がいちばんの方針です。決まったゲームの型を選ぶのではなく、部品を組み合わせて作ります。</p>
+  <div class="features">
+    <div class="feat"><h3>ルールをフォームで書く</h3><p>「いつ（〜したとき）」「もし（条件）」「こうする（アクション）」を選んでいくだけ。式には入力補助が付き、打ち間違いはその場で知らせます。慣れたら JSON で直接書くこともできます。</p></div>
+    <div class="feat"><h3>ゲームの流れを図で組む</h3><p>タイトル・階・ボス・終わりの画面などを、ノードを線でつないで作ります。マップの生成も手順をフォームで並べ、その場でプレビューできます。</p></div>
+    <div class="feat"><h3>ターン制もリアルタイムも</h3><p>マス目のターン制、自由に動けるリアルタイム、物理演算、マップを使わないカード型まで、シーンごとに選べます。</p></div>
+    <div class="feat"><h3>画像・音・演出</h3><p>キャラクターは文字でも画像（コマ割りアニメ）でも。手持ちの wav / mp3 / ogg を効果音や BGM（ループ区間つき）に使えます。</p></div>
+    <div class="feat"><h3>みんなで遊ぶ</h3><p>同じ PC での2人プレイと、ネット越しのプレイ（ホスト方式・LAN や IP を指定して接続）に対応。見せない情報（相手の手札など）も隠せます。</p></div>
+    <div class="feat"><h3>もっと自由に：スクリプトとプラグイン</h3><p>足りないところは JavaScript のスクリプトで。さらに速さや .NET の部品が必要なら C# のプラグイン（DLL）でアクションや関数を足せます。</p></div>
+    <div class="feat"><h3>AI に手伝ってもらう（任意）</h3><p>敵やアイテムの案出し、注文と雰囲気からのゲームの下書きを AI に頼めます。OpenAI・Anthropic・Google の自分の API キーか、PC で動かす Ollama を使います。</p></div>
+    <div class="feat"><h3>仲間と作る・配る</h3><p>GitHub を使った共同作業（送る・受け取る・ぶつかったらファイルごとに選ぶ）に対応。できたゲームは「書き出し」で、エディターを持っていない人が遊べる形にできます。</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eye">Editor</div>
+  <h2>はじめてでも迷わないように</h2>
+  <p class="lead">作りながら覚える9歩のチュートリアルと、用語集・「こんなときは」をまとめたヘルプが入っています。どの画面にも、右側に説明があります。</p>
+  <div class="split">
+    <figure><img src="assets/screenshots/editor-flow.jpg" alt="ゲームフローを図で編集している画面" loading="lazy"/><figcaption>ゲームフローの図。ノードを選ぶと右のフォームで中身を編集できます。</figcaption></figure>
+    <figure><img src="assets/screenshots/editor-content.jpg" alt="Blueprint（敵やアイテムの雛形）を編集している画面" loading="lazy"/><figcaption>敵・アイテム・武器などの雛形（Blueprint）。ステータスは数字でも式でも書けます。</figcaption></figure>
+  </div>
+</section>
+
+<section id="download">
+  <div class="eye">Download</div>
+  <h2>ダウンロード</h2>
+  <p class="lead">無料でお使いいただけます。現在はベータ版です。</p>
+  <div class="dl">
+    <div class="dl-card">
+      <div class="dl-ico">🪟</div>
+      <div class="dl-nm">Windows</div>
+      <div class="dl-status">v0.1.0（ベータ）・zip・約157MB</div>
+      <a href="https://github.com/stardustdreams/stardustdreams.github.io/releases/download/v0.1.0-rinne/Rinne-0.1.0-Windows.zip" class="btn btn-p">⬇ ダウンロード（zip）</a>
+      <div class="dl-small">Windows 10 / 11（64ビット）<br>Mac 版・Linux 版は準備中です</div>
+    </div>
+    <div class="notes">
+      <h3>はじめかた</h3>
+      <ul>
+        <li>zip を好きな場所に展開し、中の <code>Rinne.exe</code> を開きます。.NET などを別に入れる必要はありません。</li>
+        <li>最初の画面の「はじめての方へ: 作りながら覚えるチュートリアル」から始めるのがおすすめです。</li>
+        <li>展開したフォルダの中のもの（players・templates など）は、動かしたり消したりしないでください。</li>
+      </ul>
+      <h3>はじめて開くとき</h3>
+      <ul>
+        <li>発行元の署名が無いため、SmartScreen の警告が出る場合があります。「詳細情報」→「実行」で開けます。</li>
+      </ul>
+      <h3>更新</h3>
+      <ul>
+        <li>起動したときに新しい版があるかを確かめ、あればお知らせします。「更新する」を押したときだけ、取ってきたファイルの SHA-256 を確かめてから入れ替えます（勝手には入れ替えません）。</li>
+        <li>Program Files など書き込めない場所に置いたときは入れ替えられないため、このページから入れ直してください。</li>
+      </ul>
+      <h3>一部の機能に必要なもの</h3>
+      <ul>
+        <li>共同作業（GitHub）: <a href="https://gitforwindows.org/" target="_blank" rel="noopener">Git for Windows</a></li>
+        <li>AI の機能: 自分の API キー（OpenAI・Anthropic・Google）か Ollama。使わなくても、ほかの機能はすべて使えます。</li>
+      </ul>
+      <h3>作ったゲームを配るとき</h3>
+      <ul>
+        <li>Windows 向けのほか Mac・Linux 向けにも書き出せますが、Mac・Linux の実機での動作はまだ確認していません。配る前にその OS で動くかをお確かめください。</li>
+        <li>C# のプラグイン（DLL）を使ったゲームは、遊ぶ人の PC でその DLL が動きます。中身を知っている DLL だけを入れてください。</li>
+      </ul>
+      <h3>ベータ版について</h3>
+      <ul>
+        <li>開発中のため不具合が含まれる場合があります。作ったプロジェクトは、ときどき別の場所にも写しておくと安心です。</li>
+        <li>使っているオープンソースの部品のライセンスは、同梱の <code>THIRD-PARTY-NOTICES.txt</code> にあります。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2026 Stardust Dreams — <a href="../">作品一覧</a> — <a href="mailto:i.kamata228@gmail.com">お問い合わせ</a></p>
+</footer>
+
+</body>
+</html>
